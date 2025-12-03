@@ -4,17 +4,22 @@ import re
 import html
 import logging
 from datetime import datetime, timedelta, timezone
+
+import mysql.connector
+from mysql.connector import Error as MySQLError
 import requests
 from dateutil import parser as dateparser
-
 from flask import (
-    Flask, render_template, request,
-    jsonify, send_from_directory, abort
+    Flask,
+    render_template,
+    request,
+    jsonify,
+    send_from_directory,
+    abort,
 )
 import razorpay
 import pandas as pd
 from dotenv import load_dotenv
-
 import google.generativeai as genai
 
 # ------------------ CONFIG ------------------
@@ -35,9 +40,16 @@ RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 PAYMENT_AMOUNT = int(os.getenv("PAYMENT_AMOUNT", str(DEFAULT_PAYMENT_AMOUNT)))  # in paise
+DB_USER = os.getenv("DB_USER")
+DB_NAME = os.getenv("DB_NAME")
+DB_PASS = os.getenv("DB_PASS")
+DB_HOST = os.getenv("DB_HOST", "localhost")
 
 if not (RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET and GEMINI_API_KEY):
     raise RuntimeError("Please set RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, GEMINI_API_KEY in .env")
+
+if not all([DB_USER, DB_NAME, DB_PASS, DB_HOST]):
+    raise RuntimeError("Please set DB_USER, DB_NAME, DB_PASS, DB_HOST in .env for MySQL connectivity")
 
 genai.configure(api_key=GEMINI_API_KEY)
 
@@ -61,11 +73,109 @@ logger = logging.getLogger(__name__)
 # Razorpay client
 rz_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
-# In-memory store for this MVP (no DB)
-ORDERS = {}  # order_id -> {"prefs": {...}, "file_id": str or None, "created_at": datetime}
+# In-memory store for preferences and generated file mapping
+# order_id -> {"prefs": {...}, "file_id": str or None, "created_at": datetime}
+ORDERS = {}
 
 GENERATED_DIR = os.path.join(os.path.dirname(__file__), "generated")
 os.makedirs(GENERATED_DIR, exist_ok=True)
+
+
+# ------------------ DB UTILS ------------------
+
+DB_CONFIG = {
+    "user": DB_USER,
+    "password": DB_PASS,
+    "host": DB_HOST,
+    "database": DB_NAME,
+    "autocommit": True,
+}
+
+
+def get_db_connection():
+    """
+    Get a new MySQL connection using environment configuration.
+    """
+    try:
+        return mysql.connector.connect(**DB_CONFIG)
+    except MySQLError as e:
+        logger.error(f"Error connecting to MySQL: {e}", exc_info=True)
+        raise
+
+
+def init_db():
+    """
+    Create required tables if they do not exist.
+    Currently manages the 'transactions' table used to store payment records.
+    """
+    create_transactions_table_sql = """
+        CREATE TABLE IF NOT EXISTS transactions (
+            id BIGINT AUTO_INCREMENT PRIMARY KEY,
+            razorpay_order_id VARCHAR(64) NOT NULL,
+            razorpay_payment_id VARCHAR(64) NOT NULL,
+            amount INT NOT NULL,
+            currency VARCHAR(8) NOT NULL,
+            status VARCHAR(32) NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+    """
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(create_transactions_table_sql)
+    except MySQLError as e:
+        logger.error(f"Error initializing database: {e}", exc_info=True)
+        raise
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None and conn.is_connected():
+            conn.close()
+
+def save_transaction(razorpay_order_id, razorpay_payment_id, amount, currency, status):
+    """
+    Persist a payment transaction record in the database.
+    """
+    sql = """
+        INSERT INTO transactions (
+            razorpay_order_id,
+            razorpay_payment_id,
+            amount,
+            currency,
+            status
+        )
+        VALUES (%s, %s, %s, %s, %s)
+    """
+
+    params = (
+        razorpay_order_id,
+        razorpay_payment_id,
+        amount,
+        currency,
+        status,
+    )
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(sql, params)
+        conn.commit()
+    except MySQLError as e:
+        logger.error(
+            f"Error saving transaction {razorpay_payment_id} for order {razorpay_order_id}: {e}",
+            exc_info=True,
+        )
+        raise
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None and conn.is_connected():
+            conn.close()
 
 
 # ------------------ UTILS ------------------
@@ -480,10 +590,12 @@ def create_order():
         order_id = order["id"]
     except Exception as e:
         app.logger.error(f"Error creating Razorpay order: {e}", exc_info=True)
-        return jsonify({
-            "success": False,
-            "error": "Failed to create payment order. Please try again."
-        }), 500
+        return jsonify(
+            {
+                "success": False,
+                "error": "Failed to create payment order. Please try again.",
+            }
+        ), 500
 
     # Store preferences in memory mapped to order_id
     ORDERS[order_id] = {
@@ -492,13 +604,17 @@ def create_order():
         "created_at": datetime.now(timezone.utc),
     }
 
-    app.logger.info(f"Created order {order_id} for preferences: {prefs['sector']}, {prefs['job_location']}")
+    app.logger.info(
+        f"Created order {order_id} for preferences: {prefs['sector']}, {prefs['job_location']}"
+    )
 
-    return jsonify({
-        "order_id": order_id,
-        "amount": PAYMENT_AMOUNT,
-        "currency": "INR"
-    })
+    return jsonify(
+        {
+            "order_id": order_id,
+            "amount": PAYMENT_AMOUNT,
+            "currency": "INR",
+        }
+    )
 
 
 @app.route("/verify_payment", methods=["POST"])
@@ -532,7 +648,23 @@ def verify_payment():
         app.logger.error(f"Error verifying payment signature: {e}", exc_info=True)
         return jsonify({"success": False, "error": "Payment verification error"}), 500
 
-    # Fetch preferences
+    # Persist successful transaction details in DB (best-effort, do not block flow)
+    try:
+        save_transaction(
+            razorpay_order_id=razorpay_order_id,
+            razorpay_payment_id=razorpay_payment_id,
+            amount=PAYMENT_AMOUNT,
+            currency="INR",
+            status="success",
+        )
+    except MySQLError:
+        # Log and continue; we don't want to break the user flow if logging fails
+        app.logger.error(
+            f"Failed to persist transaction for order {razorpay_order_id}",
+            exc_info=True,
+        )
+
+    # Fetch preferences from in-memory store
     order_data = ORDERS.get(razorpay_order_id)
     if not order_data:
         return jsonify({"success": False, "error": "Order not found"}), 404
@@ -550,18 +682,17 @@ def verify_payment():
         
         app.logger.info(f"Fetched {len(jobs)} jobs, generating Excel file...")
         file_id = generate_excel(jobs)
-        
-        # Store file_id back
+
+        # Store file_id back in memory
         order_data["file_id"] = file_id
-        
-        app.logger.info(f"Successfully generated file {file_id} for order {razorpay_order_id}")
-        
+
+        app.logger.info(
+            f"Successfully generated file {file_id} for order {razorpay_order_id}"
+        )
+
         download_url = f"/download/{file_id}"
-        
-        return jsonify({
-            "success": True,
-            "download_url": download_url
-        })
+
+        return jsonify({"success": True, "download_url": download_url})
     except requests.RequestException as e:
         app.logger.error(f"Network error fetching jobs for order {razorpay_order_id}: {e}", exc_info=True)
         return jsonify({
@@ -614,5 +745,8 @@ def download_file(file_id):
 
 
 if __name__ == "__main__":
+    # Initialize DB schema (creates tables if they don't exist)
+    init_db()
+
     # For development only
-    app.run()
+    app.run(debug=False)
