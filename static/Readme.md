@@ -1,1 +1,1 @@
-md
+static files
