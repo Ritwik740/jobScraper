@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LetsJobify - Find Your Dream Job</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Get personalized job listings matched to your skills. AI-powered job search with instant Excel reports.">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --secondary-color: #10b981;
+      --secondary-dark: #059669;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --text-light: #9ca3af;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --bg-tertiary: #f3f4f6;
+      --border-color: #e5e7eb;
+      --success-color: #10b981;
+      --error-color: #ef4444;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    .logo {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .tagline {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
+
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .feature-badge {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      box-shadow: var(--shadow-xl);
+      padding: 40px;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .form-section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--bg-tertiary);
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    label .optional {
+      color: var(--text-light);
+      font-weight: 400;
+      font-size: 0.8rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.2s;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    input::placeholder {
+      color: var(--text-light);
+    }
+
+    .payment-info {
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 32px 0;
+      text-align: center;
+    }
+
+    .payment-info strong {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: block;
+      margin-top: 4px;
+    }
+
+    .payment-info-text {
+      font-size: 0.875rem;
+      opacity: 0.95;
+      margin-top: 8px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: var(--shadow-md);
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+    }
+
+    button[type="submit"]:active {
+      transform: translateY(0);
+    }
+
+    button[type="submit"]:disabled {
+      background: var(--bg-tertiary);
+      color: var(--text-light);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Loader */
+    #loaderContainer {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    #loaderContainer.show {
+      display: block;
+    }
+
+    .spinner {
+      border: 4px solid var(--bg-tertiary);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 24px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .loader-status {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    /* Success */
+    .success-container {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .success-container.show {
+      display: block;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--success-color) 0%, var(--secondary-dark) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 48px;
+      color: white;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .success-message {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 32px;
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--success-color) 0%, var(--secondary-dark) 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: var(--shadow-md);
+      letter-spacing: 0.3px;
+    }
+
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Error */
+    #jobForm.hide {
+      display: none;
+    }
+
+    .error-message {
+      background: #fef2f2;
+      border: 2px solid var(--error-color);
+      color: var(--error-color);
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 24px;
+      font-weight: 500;
+    }
+
+    #status {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+    }
+
+    #status.info {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 60px;
+      padding: 30px 20px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.875rem;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.2s;
+    }
+
+    footer a:hover {
+      border-bottom-color: white;
+    }
+
+    footer p {
+      margin-bottom: 8px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container {
+        padding: 20px 16px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .logo {
+        font-size: 2rem;
+      }
+
+      .tagline {
+        font-size: 1rem;
+      }
+
+      .features {
+        gap: 12px;
+      }
+
+      .feature-badge {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="logo">LetsJobify</h1>
+      <p class="tagline">AI-Powered Job Search Made Simple</p>
+      <div class="features">
+        <span class="feature-badge">🎯 Personalized Matching</span>
+        <span class="feature-badge">⚡ Instant Results</span>
+        <span class="feature-badge">📊 Excel Export</span>
+      </div>
+    </header>
+
+    <div class="card">
+      <form id="jobForm">
+        <div class="form-section">
+          <h2 class="section-title">Job Preferences</h2>
+          
+          <div class="form-group">
+            <label for="job_location">Job Location Type</label>
+            <select id="job_location" name="job_location" required>
+              <option value="remote">🌐 Remote</option>
+              <option value="onsite">🏢 Onsite</option>
+              <option value="hybrid">🔄 Hybrid</option>
+              <option value="any">📍 Any</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sector">Sector</label>
+            <select id="sector" name="sector" required>
+              <option value="IT">💻 IT</option>
+              <option value="Engineering">⚙️ Engineering</option>
+              <option value="Healthcare">🏥 Healthcare</option>
+              <option value="any">🔀 Any Sector</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="skills">Skills <span class="optional">(comma separated)</span></label>
+            <input type="text" id="skills" name="skills" placeholder="e.g., python, flask, aws, docker" required>
+          </div>
+
+          <div class="form-group">
+            <label for="min_salary">Minimum Expected Salary <span class="optional">(yearly in INR)</span></label>
+            <input type="number" id="min_salary" name="min_salary" placeholder="600000">
+          </div>
+        </div>
+
+        <div class="payment-info">
+          <div>Total Amount</div>
+          <strong>₹{{ payment_amount / 100 }}</strong>
+          <div class="payment-info-text">Secure payment via Razorpay • Instant Excel download after payment</div>
+        </div>
+
+        <button type="submit">🚀 Get My Job Listings</button>
+      </form>
+
+      <!-- Loader Container -->
+      <div id="loaderContainer">
+        <div class="spinner"></div>
+        <div class="loader-text">Preparing your job listings...</div>
+        <div class="loader-status" id="loaderStatus">This may take 10-30 seconds. Please wait.</div>
+      </div>
+
+      <!-- Success Container -->
+      <div id="successContainer" class="success-container">
+        <div class="success-icon">✓</div>
+        <div class="success-message">Your Excel sheet is ready!</div>
+        <a href="#" id="downloadLink" class="download-btn">📥 Download Excel File</a>
+      </div>
+
+      <div id="status"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Job listings powered by <a href="https://remoteok.com" target="_blank" rel="noopener noreferrer">RemoteOK</a></p>
+    <p style="margin-top: 8px; opacity: 0.8;">All job links are direct links to RemoteOK job postings.</p>
+  </footer>
+
+  <!-- Razorpay checkout script -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+    const form = document.getElementById('jobForm');
+    const statusDiv = document.getElementById('status');
+    const loaderContainer = document.getElementById('loaderContainer');
+    const loaderStatus = document.getElementById('loaderStatus');
+    const successContainer = document.getElementById('successContainer');
+    const downloadLink = document.getElementById('downloadLink');
+
+    function showLoader() {
+      form.classList.add('hide');
+      loaderContainer.classList.add('show');
+      successContainer.classList.remove('show');
+      statusDiv.textContent = '';
+      statusDiv.className = '';
+    }
+
+    function hideLoader() {
+      loaderContainer.classList.remove('show');
+    }
+
+    function showSuccess(downloadUrl) {
+      hideLoader();
+      successContainer.classList.add('show');
+      downloadLink.href = downloadUrl;
+    }
+
+    function showError(message) {
+      hideLoader();
+      form.classList.remove('hide');
+      statusDiv.textContent = message;
+      statusDiv.className = 'error-message';
+    }
+
+    function showInfo(message) {
+      statusDiv.textContent = message;
+      statusDiv.className = 'info';
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      showInfo("Creating payment order...");
+
+      const formData = new FormData(form);
+      const payload = {
+        job_location: formData.get('job_location'),
+        sector: formData.get('sector'),
+        skills: formData.get('skills'),
+        min_salary: formData.get('min_salary')
+      };
+
+      try {
+        const orderRes = await fetch('/create_order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const orderData = await orderRes.json();
+        if (!orderRes.ok) {
+          showError("Error creating order: " + (orderData.error || orderRes.statusText));
+          return;
+        }
+
+        const options = {
+          "key": "{{ razorpay_key_id }}",
+          "amount": orderData.amount,
+          "currency": orderData.currency,
+          "name": "LetsJobify",
+          "description": "AI-Powered Job Listings",
+          "order_id": orderData.order_id,
+          "handler": async function (response) {
+            // Show loader after successful payment
+            showLoader();
+            loaderStatus.textContent = "Payment verified. Starting to fetch job listings...";
+
+            try {
+              // Start the fetch request
+              const verifyPromise = fetch('/verify_payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature
+                })
+              });
+
+              // Update status while waiting (after a short delay to show progression)
+              setTimeout(() => {
+                if (loaderContainer.classList.contains('show')) {
+                  loaderStatus.textContent = "Fetching jobs from remote sources and processing...";
+                }
+              }, 1000);
+
+              // Wait for response
+              const verifyRes = await verifyPromise;
+
+              // Update status while parsing response
+              if (loaderContainer.classList.contains('show')) {
+                loaderStatus.textContent = "Generating Excel file with your job listings...";
+              }
+
+              const verifyData = await verifyRes.json();
+              if (!verifyRes.ok || !verifyData.success) {
+                showError("Error generating jobs: " + (verifyData.error || "Unknown error"));
+                return;
+              }
+
+              // Show success state
+              loaderStatus.textContent = "Your Excel file is ready!";
+              setTimeout(() => {
+                showSuccess(verifyData.download_url);
+              }, 500);
+
+            } catch (err) {
+              console.error(err);
+              showError("Error verifying payment. Please contact support.");
+            }
+          },
+          "theme": {
+            "color": "#6366f1"
+          }
+        };
+
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+
+      } catch (err) {
+        console.error(err);
+        showError("Error contacting server. Please try again.");
+      }
+    });
+  </script>
+</body>
+</html>
