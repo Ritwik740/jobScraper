@@ -16,6 +16,7 @@ from flask import (
     jsonify,
     send_from_directory,
     abort,
+    Response,
 )
 import razorpay
 import pandas as pd
@@ -515,6 +516,63 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.png', mimetype='image/png')
 
 
+@app.route("/privacy-policy", methods=["GET"])
+def privacy_policy():
+    """Privacy policy page"""
+    return render_template("privacy_policy.html")
+
+
+@app.route("/sitemap.xml", methods=["GET"])
+def sitemap():
+    """Generate sitemap.xml for SEO"""
+    base_url = request.url_root.rstrip('/')
+    sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{base_url}/</loc>
+    <lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>{base_url}/privacy-policy</loc>
+    <lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>"""
+    return Response(sitemap_content, mimetype='application/xml')
+
+
+@app.route("/robots.txt", methods=["GET"])
+def robots():
+    """Generate robots.txt for search engines"""
+    base_url = request.url_root.rstrip('/')
+    robots_content = f"""User-agent: *
+Allow: /
+Allow: /privacy-policy
+Disallow: /download/
+Disallow: /generated/
+Disallow: /verify_payment
+Disallow: /create_order
+
+Sitemap: {base_url}/sitemap.xml
+"""
+    return Response(robots_content, mimetype='text/plain')
+
+
+@app.route("/llms.txt", methods=["GET"])
+def llms_txt():
+    """Serve llms.txt file for LLMs"""
+    llms_path = os.path.join(app.root_path, 'llms.txt')
+    if os.path.exists(llms_path):
+        with open(llms_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return Response(content, mimetype='text/plain')
+    else:
+        abort(404)
+
+
 def validate_preferences(data):
     """
     Validate and sanitize user preferences.
@@ -748,5 +806,5 @@ if __name__ == "__main__":
     # Initialize DB schema (creates tables if they don't exist)
     init_db()
 
-    # For development only
-    app.run(debug=False)
+
+    app.run()
