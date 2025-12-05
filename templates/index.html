@@ -2,11 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>LetsJobify - Find Your Dream Job</title>
+  <title>LetsJobify - AI-Powered Job Search | Find Remote Jobs, IT Jobs, Engineering Jobs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Get personalized job listings matched to your skills. AI-powered job search with instant Excel reports.">
+  <meta name="description" content="Get personalized job listings matched to your skills. AI-powered job search with instant Excel reports. Find remote, onsite, and hybrid jobs in IT, Engineering, Healthcare, and more.">
+  <meta name="keywords" content="job search, remote jobs, IT jobs, engineering jobs, job listings, AI job matching, career opportunities, job finder, remote work, tech jobs">
+  <meta name="author" content="LetsJobify">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://letsjobify.com/">
+  <meta property="og:title" content="LetsJobify - AI-Powered Job Search | Find Your Dream Job">
+  <meta property="og:description" content="Get personalized job listings matched to your skills. AI-powered job search with instant Excel reports.">
+  <meta property="og:site_name" content="LetsJobify">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://letsjobify.com/">
+  <meta name="twitter:title" content="LetsJobify - AI-Powered Job Search">
+  <meta name="twitter:description" content="Get personalized job listings matched to your skills. AI-powered job search with instant Excel reports.">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="{{ base_url }}/">
+  
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "LetsJobify",
+    "description": "AI-powered job search platform that helps job seekers find personalized job listings matched to their skills and preferences",
+    "url": "https://letsjobify.com",
+    "applicationCategory": "JobSearchApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "100",
+      "priceCurrency": "INR"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "LetsJobify",
+      "url": "https://letsjobify.com",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "mishra.ritwik.03@gmail.com",
+        "contactType": "Customer Service"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "647F/209 Shiv Vihar, Sector I, Jankipuram",
+        "addressLocality": "Lucknow",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://www.instagram.com/letsjobify/"
+      ]
+    },
+    "featureList": [
+      "AI-powered job matching",
+      "Personalized job listings",
+      "Excel export",
+      "Remote job search",
+      "IT jobs",
+      "Engineering jobs"
+    ]
+  }
+  </script>
   <style>
     :root {
       --primary-color: #6366f1;
@@ -455,6 +521,91 @@
       }
     }
 
+    /* FAQ Styles */
+    .faq-container {
+      margin-top: 24px;
+    }
+
+    .faq-item {
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-primary);
+      transition: all 0.2s;
+    }
+
+    .faq-item:hover {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .faq-question {
+      width: 100%;
+      padding: 16px 20px;
+      text-align: left;
+      background: var(--bg-secondary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .faq-question:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .faq-question[aria-expanded="true"] {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .faq-question[aria-expanded="true"] .faq-icon {
+      transform: rotate(45deg);
+      color: white;
+    }
+
+    .faq-icon {
+      font-size: 1.5rem;
+      font-weight: 300;
+      transition: transform 0.3s;
+      color: var(--primary-color);
+      line-height: 1;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+      padding: 0 20px;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 500px;
+      padding: 16px 20px 20px;
+    }
+
+    .faq-answer p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .faq-answer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .faq-answer a:hover {
+      text-decoration: underline;
+    }
+
     /* Responsive */
     @media (max-width: 640px) {
       .container {
@@ -481,13 +632,26 @@
         font-size: 0.75rem;
         padding: 6px 12px;
       }
+
+      .faq-question {
+        padding: 14px 16px;
+        font-size: 0.9rem;
+      }
+
+      .faq-answer {
+        padding: 0 16px;
+      }
+
+      .faq-item.active .faq-answer {
+        padding: 14px 16px 16px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <h1 class="logo">LetsJobify</h1>
+      <h1 class="logo">LetsJobify - Find Your Dream Job with AI-Powered Matching</h1>
       <p class="tagline">AI-Powered Job Search Made Simple</p>
       <div class="features">
         <span class="feature-badge">🎯 Personalized Matching</span>
@@ -499,7 +663,7 @@
     <div class="card">
       <form id="jobForm">
         <div class="form-section">
-          <h2 class="section-title">Job Preferences</h2>
+          <h2 class="section-title">Find Your Perfect Job - Enter Your Preferences</h2>
           
           <div class="form-group">
             <label for="job_location">Job Location Type</label>
@@ -556,6 +720,95 @@
       </div>
 
       <div id="status"></div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="card" style="margin-top: 40px;">
+      <div class="form-section">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        
+        <div class="faq-container">
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>How does LetsJobify work?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>LetsJobify uses AI-powered matching to find job listings that match your skills and preferences. Simply enter your job preferences (location type, sector, skills), make a payment, and receive a personalized Excel file with matching job listings within seconds.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>What types of jobs can I find?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>We specialize in IT, Engineering, Healthcare, and other technical sectors. You can search for remote, onsite, hybrid, or any location type. Our AI matches jobs based on your specific skills and sector preferences.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>How quickly will I receive my job listings?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>After payment verification, your personalized Excel file is generated within 10-30 seconds. You'll receive a download link immediately after payment is confirmed.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>What payment methods do you accept?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>We accept all major payment methods through Razorpay, including credit cards, debit cards, UPI, net banking, and digital wallets. All payments are secure and encrypted.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Are the job listings up-to-date?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Yes! We fetch job listings from multiple sources including RemoteOK and other job aggregators. Our system focuses on jobs posted in the last 24 hours to ensure you get the freshest opportunities.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Can I get a refund if I'm not satisfied?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>We strive to provide the best job matching service. If you have concerns about your job listings, please contact us at mishra.ritwik.03@gmail.com and we'll work with you to resolve any issues.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>How does the AI matching work?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Our AI analyzes your skills, sector preferences, and job requirements to match you with relevant opportunities. Each job listing includes a match score (0-100) to help you identify the most relevant positions. Job descriptions are also enhanced using AI to make them more readable and candidate-friendly.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Is my personal information secure?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Absolutely! We take data privacy seriously. Your payment information is processed securely through Razorpay. We only collect job preferences necessary for matching. See our <a href="/privacy-policy">Privacy Policy</a> for detailed information about how we protect your data.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -725,6 +978,97 @@
         showError("Error contacting server. Please try again.");
       }
     });
+
+    // FAQ Accordion Functionality
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', function() {
+        const faqItem = this.parentElement;
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        
+        // Close all other FAQs
+        document.querySelectorAll('.faq-item').forEach(item => {
+          if (item !== faqItem) {
+            item.classList.remove('active');
+            item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+          }
+        });
+        
+        // Toggle current FAQ
+        if (isExpanded) {
+          faqItem.classList.remove('active');
+          this.setAttribute('aria-expanded', 'false');
+        } else {
+          faqItem.classList.add('active');
+          this.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  </script>
+  
+  <!-- FAQ Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How does LetsJobify work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LetsJobify uses AI-powered matching to find job listings that match your skills and preferences. Simply enter your job preferences (location type, sector, skills), make a payment, and receive a personalized Excel file with matching job listings within seconds."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What types of jobs can I find?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We specialize in IT, Engineering, Healthcare, and other technical sectors. You can search for remote, onsite, hybrid, or any location type. Our AI matches jobs based on your specific skills and sector preferences."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How quickly will I receive my job listings?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "After payment verification, your personalized Excel file is generated within 10-30 seconds. You'll receive a download link immediately after payment is confirmed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What payment methods do you accept?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We accept all major payment methods through Razorpay, including credit cards, debit cards, UPI, net banking, and digital wallets. All payments are secure and encrypted."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are the job listings up-to-date?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! We fetch job listings from multiple sources including RemoteOK and other job aggregators. Our system focuses on jobs posted in the last 24 hours to ensure you get the freshest opportunities."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the AI matching work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our AI analyzes your skills, sector preferences, and job requirements to match you with relevant opportunities. Each job listing includes a match score (0-100) to help you identify the most relevant positions. Job descriptions are also enhanced using AI to make them more readable and candidate-friendly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my personal information secure?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely! We take data privacy seriously. Your payment information is processed securely through Razorpay. We only collect job preferences necessary for matching. See our Privacy Policy for detailed information about how we protect your data."
+        }
+      }
+    ]
+  }
   </script>
 </body>
 </html>
