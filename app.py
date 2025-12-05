@@ -507,7 +507,13 @@ def generate_excel(jobs):
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html", razorpay_key_id=RAZORPAY_KEY_ID, payment_amount=PAYMENT_AMOUNT)
+    base_url = request.url_root.rstrip('/')
+    return render_template(
+        "index.html",
+        razorpay_key_id=RAZORPAY_KEY_ID,
+        payment_amount=PAYMENT_AMOUNT,
+        base_url=base_url
+    )
 
 
 @app.route("/favicon.ico")
@@ -519,7 +525,8 @@ def favicon():
 @app.route("/privacy-policy", methods=["GET"])
 def privacy_policy():
     """Privacy policy page"""
-    return render_template("privacy_policy.html")
+    base_url = request.url_root.rstrip('/')
+    return render_template("privacy_policy.html", base_url=base_url)
 
 
 @app.route("/sitemap.xml", methods=["GET"])
