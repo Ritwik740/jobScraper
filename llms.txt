@@ -16,13 +16,6 @@ LetsJobify is an AI-powered job search platform that helps job seekers find pers
 - Instant Excel file generation with job listings
 - Secure payment processing via Razorpay
 
-## Technology Stack
-- **Backend:** Flask (Python)
-- **Database:** MySQL
-- **AI:** Google Gemini AI (gemini-2.0-flash)
-- **Payment:** Razorpay
-- **Job Sources:** RemoteOK API, and other job aggregators
-
 ## Data Sources
 - Job listings are sourced from RemoteOK and other job aggregators
 - All job links are direct links to the original job postings
