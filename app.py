@@ -9,6 +9,8 @@ import mysql.connector
 from mysql.connector import Error as MySQLError
 import requests
 from dateutil import parser as dateparser
+from bs4 import BeautifulSoup
+import feedparser
 from flask import (
     Flask,
     render_template,
@@ -446,10 +448,529 @@ def fetch_remoteok_jobs(prefs):
 
     return results
 
+# Wellfound API is no longer available (returns 404)
+# Function removed - API endpoint no longer exists
+
+def fetch_jobicy_jobs(prefs):
+    """
+    Fetch remote jobs from Jobicy API.
+    Returns up to 50 jobs matching preferences.
+    """
+    url = "https://jobicy.com/api/v2/remote-jobs"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (compatible; LetsJobifyBot/1.0; +https://letsjobify.com)"
+    }
+
+    try:
+        resp = requests.get(url, headers=headers, timeout=API_TIMEOUT_SECONDS)
+        resp.raise_for_status()
+        data = resp.json()
+    except requests.Timeout as e:
+        logger.error(f"Jobicy API request timeout: {e}", exc_info=True)
+        return []
+    except requests.RequestException as e:
+        logger.error(f"Jobicy API request error: {e}", exc_info=True)
+        return []
+    except Exception as e:
+        logger.error(f"Jobicy fetch error: {e}", exc_info=True)
+        return []
+
+    skills = [s.strip().lower() for s in prefs.get("skills", "").split(",") if s.strip()]
+    sector = (prefs.get("sector") or "").lower()
+    job_location = (prefs.get("job_location") or "remote").lower()
+
+    # Jobicy is remote-only
+    if job_location not in ["remote", "any"]:
+        return []
+
+    results = []
+    jobs_list = data.get("jobs", [])[:50]  # Limit to 50
+
+    for j in jobs_list:
+        title = j.get("jobTitle") or ""
+        company = j.get("companyName") or ""
+        raw_desc = strip_html(j.get("jobDescription", ""))
+        url = j.get("url") or ""
+
+        if not title or not company:
+            continue
+
+        # Skill match filter
+        text_blob = (title + " " + raw_desc).lower()
+        if skills and not any(s in text_blob for s in skills):
+            continue
+
+        # Sector filter
+        if sector not in ["", "any"]:
+            if sector not in ["it", "engineering"]:
+                continue
+
+        enhanced_desc, score = gemini_enhance_description(
+            job_title=title,
+            company=company,
+            raw_desc=raw_desc,
+            skills=skills,
+            sector=sector or "IT",
+        )
+
+        results.append({
+            "Job Title": title,
+            "Company": company,
+            "Description": enhanced_desc,
+            "Location Type": "remote",
+            "Posted At (UTC)": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
+            "Job Link": url,
+            "Match Score": score,
+        })
+
+    return results
+
+def fetch_remotive_jobs(prefs):
+    """
+    Fetch remote jobs from Remotive API.
+    Returns up to 50 jobs matching preferences.
+    """
+    url = "https://remotive.com/api/remote-jobs"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (compatible; LetsJobifyBot/1.0; +https://letsjobify.com)"
+    }
+
+    try:
+        resp = requests.get(url, headers=headers, timeout=API_TIMEOUT_SECONDS)
+        resp.raise_for_status()
+        data = resp.json()
+    except requests.Timeout as e:
+        logger.error(f"Remotive API request timeout: {e}", exc_info=True)
+        return []
+    except requests.RequestException as e:
+        logger.error(f"Remotive API request error: {e}", exc_info=True)
+        return []
+    except Exception as e:
+        logger.error(f"Remotive fetch error: {e}", exc_info=True)
+        return []
+
+    skills = [s.strip().lower() for s in prefs.get("skills", "").split(",") if s.strip()]
+    sector = (prefs.get("sector") or "").lower()
+    job_location = (prefs.get("job_location") or "remote").lower()
+
+    # Remotive is remote-only
+    if job_location not in ["remote", "any"]:
+        return []
+
+    results = []
+    jobs_list = data.get("jobs", [])[:50]  # Limit to 50
+
+    for j in jobs_list:
+        title = j.get("title") or ""
+        company = j.get("company_name") or ""
+        raw_desc = strip_html(j.get("description", ""))
+        url = j.get("url") or ""
+        publication_date = j.get("publication_date")
+
+        if not title or not company:
+            continue
+
+        # Parse date
+        dt = None
+        if publication_date:
+            try:
+                dt = dateparser.parse(publication_date)
+                if dt:
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=timezone.utc)
+                    else:
+                        dt = dt.astimezone(timezone.utc)
+            except Exception:
+                dt = None
+
+        # Skill match filter
+        text_blob = (title + " " + raw_desc).lower()
+        if skills and not any(s in text_blob for s in skills):
+            continue
+
+        # Sector filter
+        if sector not in ["", "any"]:
+            if sector not in ["it", "engineering"]:
+                continue
+
+        enhanced_desc, score = gemini_enhance_description(
+            job_title=title,
+            company=company,
+            raw_desc=raw_desc,
+            skills=skills,
+            sector=sector or "IT",
+        )
+
+        results.append({
+            "Job Title": title,
+            "Company": company,
+            "Description": enhanced_desc,
+            "Location Type": "remote",
+            "Posted At (UTC)": dt.strftime("%Y-%m-%d %H:%M") if dt else "",
+            "Job Link": url,
+            "Match Score": score,
+        })
+
+    return results
+
+def fetch_weworkremotely_jobs(prefs):
+    """
+    Fetch remote jobs from WeWorkRemotely RSS feed.
+    Returns up to 50 jobs matching preferences.
+    """
+    url = "https://weworkremotely.com/remote-jobs.rss"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (compatible; LetsJobifyBot/1.0; +https://letsjobify.com)"
+    }
+
+    try:
+        resp = requests.get(url, headers=headers, timeout=API_TIMEOUT_SECONDS)
+        resp.raise_for_status()
+        feed = feedparser.parse(resp.text)
+    except requests.Timeout as e:
+        logger.error(f"WeWorkRemotely RSS request timeout: {e}", exc_info=True)
+        return []
+    except requests.RequestException as e:
+        logger.error(f"WeWorkRemotely RSS request error: {e}", exc_info=True)
+        return []
+    except Exception as e:
+        logger.error(f"WeWorkRemotely fetch error: {e}", exc_info=True)
+        return []
+
+    skills = [s.strip().lower() for s in prefs.get("skills", "").split(",") if s.strip()]
+    sector = (prefs.get("sector") or "").lower()
+    job_location = (prefs.get("job_location") or "remote").lower()
+
+    # WeWorkRemotely is remote-only
+    if job_location not in ["remote", "any"]:
+        return []
+
+    results = []
+    entries = feed.entries[:50]  # Limit to 50
+
+    for entry in entries:
+        title = entry.get("title", "").strip()
+        company = entry.get("author", "").strip()
+        raw_desc = strip_html(entry.get("summary", ""))
+        url = entry.get("link", "")
+        published = entry.get("published")
+
+        if not title:
+            continue
+
+        # Parse date
+        dt = None
+        if published:
+            try:
+                dt = dateparser.parse(published)
+                if dt:
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=timezone.utc)
+                    else:
+                        dt = dt.astimezone(timezone.utc)
+            except Exception:
+                dt = None
+
+        # Skill match filter
+        text_blob = (title + " " + raw_desc).lower()
+        if skills and not any(s in text_blob for s in skills):
+            continue
+
+        # Sector filter
+        if sector not in ["", "any"]:
+            if sector not in ["it", "engineering"]:
+                continue
+
+        enhanced_desc, score = gemini_enhance_description(
+            job_title=title,
+            company=company or "Unknown",
+            raw_desc=raw_desc,
+            skills=skills,
+            sector=sector or "IT",
+        )
+
+        results.append({
+            "Job Title": title,
+            "Company": company or "Unknown",
+            "Description": enhanced_desc,
+            "Location Type": "remote",
+            "Posted At (UTC)": dt.strftime("%Y-%m-%d %H:%M") if dt else "",
+            "Job Link": url,
+            "Match Score": score,
+        })
+
+    return results
+
+def fetch_eu_remote_jobs(prefs):
+    """
+    Fetch remote jobs from EU Remote Jobs RSS feed.
+    Returns up to 50 jobs matching preferences.
+    """
+    url = "https://euremotejobs.com/feed/"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (compatible; LetsJobifyBot/1.0; +https://letsjobify.com)"
+    }
+
+    try:
+        resp = requests.get(url, headers=headers, timeout=API_TIMEOUT_SECONDS)
+        resp.raise_for_status()
+        feed = feedparser.parse(resp.text)
+    except requests.Timeout as e:
+        logger.error(f"EU Remote Jobs RSS request timeout: {e}", exc_info=True)
+        return []
+    except requests.RequestException as e:
+        logger.error(f"EU Remote Jobs RSS request error: {e}", exc_info=True)
+        return []
+    except Exception as e:
+        logger.error(f"EU Remote Jobs fetch error: {e}", exc_info=True)
+        return []
+
+    skills = [s.strip().lower() for s in prefs.get("skills", "").split(",") if s.strip()]
+    sector = (prefs.get("sector") or "").lower()
+    job_location = (prefs.get("job_location") or "remote").lower()
+
+    # EU Remote Jobs is remote-only
+    if job_location not in ["remote", "any"]:
+        return []
+
+    results = []
+    entries = feed.entries[:50]  # Limit to 50
+
+    for entry in entries:
+        title = entry.get("title", "").strip()
+        company = entry.get("author", "").strip()
+        raw_desc = strip_html(entry.get("summary", ""))
+        url = entry.get("link", "")
+        published = entry.get("published")
+
+        if not title:
+            continue
+
+        # Parse date
+        dt = None
+        if published:
+            try:
+                dt = dateparser.parse(published)
+                if dt:
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=timezone.utc)
+                    else:
+                        dt = dt.astimezone(timezone.utc)
+            except Exception:
+                dt = None
+
+        # Skill match filter
+        text_blob = (title + " " + raw_desc).lower()
+        if skills and not any(s in text_blob for s in skills):
+            continue
+
+        # Sector filter
+        if sector not in ["", "any"]:
+            if sector not in ["it", "engineering"]:
+                continue
+
+        enhanced_desc, score = gemini_enhance_description(
+            job_title=title,
+            company=company or "Unknown",
+            raw_desc=raw_desc,
+            skills=skills,
+            sector=sector or "IT",
+        )
+
+        results.append({
+            "Job Title": title,
+            "Company": company or "Unknown",
+            "Description": enhanced_desc,
+            "Location Type": "remote",
+            "Posted At (UTC)": dt.strftime("%Y-%m-%d %H:%M") if dt else "",
+            "Job Link": url,
+            "Match Score": score,
+        })
+
+    return results
+
+def fetch_himalayas_jobs(prefs):
+    """
+    Fetch remote jobs from Himalayas.app by scraping.
+    Returns up to 50 jobs matching preferences.
+    Note: Web scraping may be fragile if site structure changes.
+    """
+    url = "https://himalayas.app/jobs?remote=true"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+
+    try:
+        resp = requests.get(url, headers=headers, timeout=API_TIMEOUT_SECONDS)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, 'html.parser')
+    except requests.Timeout as e:
+        logger.error(f"Himalayas request timeout: {e}", exc_info=True)
+        return []
+    except requests.RequestException as e:
+        logger.error(f"Himalayas request error: {e}", exc_info=True)
+        return []
+    except Exception as e:
+        logger.error(f"Himalayas fetch error: {e}", exc_info=True)
+        return []
+
+    skills = [s.strip().lower() for s in prefs.get("skills", "").split(",") if s.strip()]
+    sector = (prefs.get("sector") or "").lower()
+    job_location = (prefs.get("job_location") or "remote").lower()
+
+    # Himalayas is remote-only
+    if job_location not in ["remote", "any"]:
+        return []
+
+    results = []
+    try:
+        cards = soup.select(".job-card")[:50]  # Limit to 50
+    except Exception as e:
+        logger.error(f"Himalayas parsing error: {e}", exc_info=True)
+        return []
+
+    for c in cards:
+        try:
+            title_elem = c.select_one(".title")
+            company_elem = c.select_one(".company")
+            link_elem = c.select_one("a")
+
+            title = title_elem.text.strip() if title_elem else ""
+            company = company_elem.text.strip() if company_elem else ""
+            link = link_elem.get("href", "") if link_elem else ""
+
+            if not title:
+                continue
+
+            url = f"https://himalayas.app{link}" if link.startswith("/") else link
+
+            # Skill match filter
+            text_blob = (title + " " + company).lower()
+            if skills and not any(s in text_blob for s in skills):
+                continue
+
+            # Sector filter
+            if sector not in ["", "any"]:
+                if sector not in ["it", "engineering"]:
+                    continue
+
+            enhanced_desc, score = gemini_enhance_description(
+                job_title=title,
+                company=company or "Unknown",
+                raw_desc="",
+                skills=skills,
+                sector=sector or "IT",
+            )
+
+            results.append({
+                "Job Title": title,
+                "Company": company or "Unknown",
+                "Description": enhanced_desc,
+                "Location Type": "remote",
+                "Posted At (UTC)": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
+                "Job Link": url,
+                "Match Score": score,
+            })
+        except Exception as e:
+            logger.debug(f"Error processing Himalayas job card: {e}")
+            continue
+
+    return results
+
+def fetch_remote_co_jobs(prefs):
+    """
+    Fetch remote jobs from Remote.co by scraping.
+    Returns up to 50 jobs matching preferences.
+    Note: Web scraping may be fragile if site structure changes.
+    """
+    url = "https://remote.co/remote-jobs/"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+
+    try:
+        resp = requests.get(url, headers=headers, timeout=API_TIMEOUT_SECONDS)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, 'html.parser')
+    except requests.Timeout as e:
+        logger.error(f"Remote.co request timeout: {e}", exc_info=True)
+        return []
+    except requests.RequestException as e:
+        logger.error(f"Remote.co request error: {e}", exc_info=True)
+        return []
+    except Exception as e:
+        logger.error(f"Remote.co fetch error: {e}", exc_info=True)
+        return []
+
+    skills = [s.strip().lower() for s in prefs.get("skills", "").split(",") if s.strip()]
+    sector = (prefs.get("sector") or "").lower()
+    job_location = (prefs.get("job_location") or "remote").lower()
+
+    # Remote.co is remote-only
+    if job_location not in ["remote", "any"]:
+        return []
+
+    results = []
+    try:
+        jobs = soup.select("div.job_listing")[:50]  # Limit to 50
+    except Exception as e:
+        logger.error(f"Remote.co parsing error: {e}", exc_info=True)
+        return []
+
+    for j in jobs:
+        try:
+            title_elem = j.select_one("a div")
+            link_elem = j.select_one("a")
+
+            title = title_elem.text.strip() if title_elem else ""
+            link = link_elem.get("href", "") if link_elem else ""
+
+            if not title:
+                continue
+
+            url = link if link.startswith("http") else f"https://remote.co{link}"
+
+            # Skill match filter
+            text_blob = title.lower()
+            if skills and not any(s in text_blob for s in skills):
+                continue
+
+            # Sector filter
+            if sector not in ["", "any"]:
+                if sector not in ["it", "engineering"]:
+                    continue
+
+            enhanced_desc, score = gemini_enhance_description(
+                job_title=title,
+                company="Unknown",
+                raw_desc="",
+                skills=skills,
+                sector=sector or "IT",
+            )
+
+            results.append({
+                "Job Title": title,
+                "Company": "Unknown",
+                "Description": enhanced_desc,
+                "Location Type": "remote",
+                "Posted At (UTC)": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
+                "Job Link": url,
+                "Match Score": score,
+            })
+        except Exception as e:
+            logger.debug(f"Error processing Remote.co job listing: {e}")
+            continue
+
+    return results
+
 def fetch_all_jobs(prefs):
     """
-    Combine:
-      - Real global remote jobs from RemoteOK
+    Combine multiple job sources:
+      - RemoteOK (global remote IT/Engineering)
+      - Jobicy (remote jobs)
+      - Remotive (remote jobs)
+      - WeWorkRemotely (remote jobs RSS)
+      - EU Remote Jobs (remote jobs RSS)
       - Dummy/placeholder jobs (for India/local/onsite/hybrid) as fallback
     """
     jobs = []
@@ -462,8 +983,56 @@ def fetch_all_jobs(prefs):
     except Exception as e:
         logger.error(f"Error in fetch_remoteok_jobs: {e}", exc_info=True)
 
-    # 2. For onsite/hybrid / India-specific, keep dummy for now
-    #    or if RemoteOK returned nothing, still give user something.
+    # 2. Try Jobicy (remote jobs API)
+    try:
+        jobicy_jobs = fetch_jobicy_jobs(prefs)
+        jobs.extend(jobicy_jobs)
+        logger.info(f"Fetched {len(jobicy_jobs)} jobs from Jobicy")
+    except Exception as e:
+        logger.error(f"Error in fetch_jobicy_jobs: {e}", exc_info=True)
+
+    # 3. Try Remotive (remote jobs API)
+    try:
+        remotive_jobs = fetch_remotive_jobs(prefs)
+        jobs.extend(remotive_jobs)
+        logger.info(f"Fetched {len(remotive_jobs)} jobs from Remotive")
+    except Exception as e:
+        logger.error(f"Error in fetch_remotive_jobs: {e}", exc_info=True)
+
+    # 4. Try WeWorkRemotely (RSS feed)
+    try:
+        wwr_jobs = fetch_weworkremotely_jobs(prefs)
+        jobs.extend(wwr_jobs)
+        logger.info(f"Fetched {len(wwr_jobs)} jobs from WeWorkRemotely")
+    except Exception as e:
+        logger.error(f"Error in fetch_weworkremotely_jobs: {e}", exc_info=True)
+
+    # 5. Try EU Remote Jobs (RSS feed)
+    try:
+        eu_jobs = fetch_eu_remote_jobs(prefs)
+        jobs.extend(eu_jobs)
+        logger.info(f"Fetched {len(eu_jobs)} jobs from EU Remote Jobs")
+    except Exception as e:
+        logger.error(f"Error in fetch_eu_remote_jobs: {e}", exc_info=True)
+
+    # 6. Try Himalayas (web scraping)
+    try:
+        himalayas_jobs = fetch_himalayas_jobs(prefs)
+        jobs.extend(himalayas_jobs)
+        logger.info(f"Fetched {len(himalayas_jobs)} jobs from Himalayas")
+    except Exception as e:
+        logger.error(f"Error in fetch_himalayas_jobs: {e}", exc_info=True)
+
+    # 7. Try Remote.co (web scraping)
+    try:
+        remote_co_jobs = fetch_remote_co_jobs(prefs)
+        jobs.extend(remote_co_jobs)
+        logger.info(f"Fetched {len(remote_co_jobs)} jobs from Remote.co")
+    except Exception as e:
+        logger.error(f"Error in fetch_remote_co_jobs: {e}", exc_info=True)
+
+    # 8. For onsite/hybrid / India-specific, keep dummy for now
+    #    or if other sources returned nothing, still give user something.
     if not jobs or (prefs.get("job_location") in ["onsite", "hybrid"]):
         try:
             dummy_jobs = dummy_scrape_jobs(prefs)
@@ -813,5 +1382,5 @@ if __name__ == "__main__":
     # Initialize DB schema (creates tables if they don't exist)
     init_db()
 
-
-    app.run()
+    # For development only
+    app.run(debug=True)
