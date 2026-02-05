@@ -1064,13 +1064,13 @@ def generate_jobs():
             "success": False,
             "error": "Failed to fetch job listings from external sources. Please try again later."
         }), 500
-    except pd.errors.ExcelWriterError as e:
-        app.logger.error(f"Excel generation error: {e}", exc_info=True)
-        return jsonify({
-            "success": False,
-            "error": "Failed to generate Excel file. Please contact support."
-        }), 500
     except Exception as e:
+        if e.__class__.__name__ == "ExcelWriterError":
+            app.logger.error(f"Excel generation error: {e}", exc_info=True)
+            return jsonify({
+                "success": False,
+                "error": "Failed to generate Excel file. Please contact support."
+            }), 500
         app.logger.error(f"Unexpected error generating jobs: {e}", exc_info=True)
         return jsonify({
             "success": False,
