@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>AI Job Search | LetsJobify AI Powered Job Board for Remote</title>
-  <meta name="description" content="AI job search and AI powered job board for remote engineering, IT, and software roles. LetsJobify delivers personalized matches fast - start now, globally.">
+  <meta name="description" content="LetsJobify: Best AI-powered job search & matching tool for remote engineering, IT, and tech jobs worldwide. Get personalized remote job listings in 60 seconds – free, fast, and accurate.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index, follow">
   <meta name="author" content="LetsJobify">
@@ -19,13 +19,13 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://letsjobify.com/">
   <meta property="og:title" content="AI Job Search | LetsJobify AI Powered Job Board">
-  <meta property="og:description" content="Find remote engineering and IT roles fast. AI powered job matching, global listings, and personalized results.">
+  <meta property="og:description" content="LetsJobify: Best AI-powered job search & matching tool for remote engineering, IT, and tech jobs worldwide. Get personalized remote job listings in 60 seconds – free, fast, and accurate.">
   <meta property="og:site_name" content="LetsJobify">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://letsjobify.com/">
   <meta name="twitter:title" content="AI Job Search | LetsJobify AI Powered Job Board">
-  <meta name="twitter:description" content="AI powered job search for remote software, IT, and engineering roles worldwide.">
+  <meta name="twitter:description" content="LetsJobify: Best AI-powered job search & matching tool for remote engineering, IT, and tech jobs worldwide. Get personalized remote job listings in 60 seconds – free, fast, and accurate.">
 
   <script type="application/ld+json">
   {
@@ -43,6 +43,18 @@
           "contactType": "Customer Support"
         },
         "sameAs": []
+      },
+      {
+        "@type": "LocalBusiness",
+        "name": "LetsJobify",
+        "url": "https://letsjobify.com",
+        "description": "AI-powered job search and matching platform for remote engineering and IT roles worldwide.",
+        "areaServed": "Worldwide",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "mishra.ritwik.03@gmail.com",
+          "contactType": "Customer Support"
+        }
       },
       {
         "@type": "WebSite",
@@ -510,6 +522,43 @@
     .hero-visual img {
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .image-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    .inline-image {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      height: auto;
+    }
+
+    .content-with-image {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .content-with-image.right-image .image-card {
+      order: 2;
+    }
+
+    .content-with-image.right-image > div {
+      order: 1;
+    }
+
+    .content-with-image.left-image .image-card {
+      order: 0;
     }
 
     .trust-row {
@@ -1171,12 +1220,25 @@
 
     <section class="section" id="ai-job-search">
       <div class="container">
-        <h2 class="section-title">AI Powered Job Board Built for Remote Engineers</h2>
-        <p class="section-subtitle">
-          LetsJobify focuses on the highest-intent keywords and the most relevant opportunities. Our AI job search
-          workflow is designed to help you find remote engineering jobs with AI matching, avoid duplicates, and surface
-          roles that actually fit your stack. Every listing includes clear role details and direct source links.
-        </p>
+        <div class="content-with-image right-image">
+          <div>
+            <h2 class="section-title">AI Powered Job Board Built for Remote Engineers</h2>
+            <p class="section-subtitle">
+              LetsJobify focuses on the highest-intent keywords and the most relevant opportunities. Our AI job search
+              workflow is designed to help you find remote engineering jobs with AI matching, avoid duplicates, and surface
+              roles that actually fit your stack. Every listing includes clear role details and direct source links.
+            </p>
+          </div>
+          <div class="image-card">
+            <img
+              class="inline-image"
+              loading="lazy"
+              decoding="async"
+              src="{{ url_for('static', filename='remote-engineer-working-laptop.jpg') }}"
+              alt="Remote engineer working on a laptop for AI job search"
+            >
+          </div>
+        </div>
 
         <div class="job-grid" aria-label="Sample remote jobs">
           {% if sample_jobs %}
@@ -1217,13 +1279,26 @@
 
     <section class="section" id="ai-matching-details">
       <div class="container">
-        <h2 class="section-title">AI Job Matching for Software Engineers Who Want Global Remote Roles</h2>
-        <p class="section-subtitle">
-          Searching for a remote role in 2026 means competing in a global market. A traditional job board will surface
-          thousands of results, but only a fraction are truly aligned with your skills. LetsJobify combines AI powered
-          job search with real-time filtering to help you identify high-fit roles faster, reduce time spent on irrelevant
-          listings, and increase your application quality.
-        </p>
+        <div class="content-with-image left-image">
+          <div class="image-card">
+            <img
+              class="inline-image"
+              loading="lazy"
+              decoding="async"
+              src="{{ url_for('static', filename='remote-team-collaboration-office.jpg') }}"
+              alt="Remote team collaborating on engineering projects"
+            >
+          </div>
+          <div>
+            <h2 class="section-title">AI Job Matching for Software Engineers Who Want Global Remote Roles</h2>
+            <p class="section-subtitle">
+              Searching for a remote role in 2026 means competing in a global market. A traditional job board will surface
+              thousands of results, but only a fraction are truly aligned with your skills. LetsJobify combines AI powered
+              job search with real-time filtering to help you identify high-fit roles faster, reduce time spent on irrelevant
+              listings, and increase your application quality.
+            </p>
+          </div>
+        </div>
         <div class="card" style="margin-top: 20px;">
           <p>
             Our AI looks beyond keywords. It evaluates your stack, seniority, and the specific requirements of each
