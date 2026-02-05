@@ -1,20 +1,17 @@
 # LetsJobify - LLMs.txt
 
 ## About
-LetsJobify is an AI-powered job search platform that helps job seekers find personalized job listings matched to their skills and preferences. We provide instant Excel reports with job listings from various sources, enhanced with AI-generated descriptions and match scores.
+LetsJobify is an AI-powered job search platform that helps job seekers find personalized job listings matched to their skills and preferences. We provide instant Excel reports with job listings from various sources.
 
 ## Contact Information
 - **Name:** Ritwik Mishra
 - **Email:** mishra.ritwik.03@gmail.com
 - **Address:** 647F/209 Shiv Vihar, Sector I, Jankipuram, Lucknow
-- **Instagram:** https://www.instagram.com/letsjobify/
 
 ## Services
 - Personalized job matching based on skills, sector, and location preferences
-- AI-enhanced job descriptions using Google Gemini AI
-- Match scoring to help users identify the most relevant opportunities
 - Instant Excel file generation with job listings
-- Secure payment processing via Razorpay
+- AI-assisted relevance filtering for remote roles
 
 ## Data Sources
 - Job listings are sourced from RemoteOK and other job aggregators
@@ -22,8 +19,7 @@ LetsJobify is an AI-powered job search platform that helps job seekers find pers
 - We comply with RemoteOK's terms of service and attribution requirements
 
 ## Privacy
-- We collect job preferences, payment transaction data, and usage information
-- Payment processing is handled securely through Razorpay
+- We collect job preferences and usage information
 - Generated Excel files are stored temporarily and accessible via secure download links
 - See our Privacy Policy at /privacy-policy for detailed information
 

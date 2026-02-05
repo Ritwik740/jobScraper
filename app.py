@@ -5,8 +5,6 @@ import html
 import logging
 from datetime import datetime, timedelta, timezone
 
-import mysql.connector
-from mysql.connector import Error as MySQLError
 import requests
 from dateutil import parser as dateparser
 from bs4 import BeautifulSoup
@@ -20,10 +18,8 @@ from flask import (
     abort,
     Response,
 )
-import razorpay
 import pandas as pd
 from dotenv import load_dotenv
-import google.generativeai as genai
 
 # ------------------ CONFIG ------------------
 
@@ -32,29 +28,80 @@ load_dotenv()
 # Constants
 REMOTEOK_API_URL = "https://remoteok.com/api"
 LAST_24_HOURS = timedelta(hours=24)
-DEFAULT_PAYMENT_AMOUNT = 10000  # in paise
 API_TIMEOUT_SECONDS = 30  # Timeout for external API calls
 MAX_REMOTEOK_JOBS = 50  # Maximum number of jobs to fetch from RemoteOK
 UUID_PATTERN = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')
 
+# Preloaded sample jobs from portal exports
+PRELOADED_JOBS = [
+    {
+        "Job Title": "Tech Lead Full-Stack Rails Engineer",
+        "Company": "Mitre Media",
+        "Description": "Architect and implement LLM-powered web applications on a Rails 8 microservices platform. Lead full-stack delivery across Dividend.com and MutualFunds.com with a focus on AI-driven investing experiences.",
+        "Location Type": "remote",
+        "Posted At (UTC)": "2026-01-14 20:46",
+        "Job Link": "https://remotive.com/remote-jobs/software-development/tech-lead-full-stack-rails-engineer-2069746",
+    },
+    {
+        "Job Title": "Tech Lead Databricks Data Engineer",
+        "Company": "Mitre Media",
+        "Description": "Own the data backbone for AI-driven fintech products. Build Databricks ETL pipelines, optimize cloud data platforms, and mentor engineers in a remote-first team.",
+        "Location Type": "remote",
+        "Posted At (UTC)": "2026-01-14 20:46",
+        "Job Link": "https://remotive.com/remote-jobs/software-development/tech-lead-databricks-data-engineer-2069747",
+    },
+    {
+        "Job Title": "Software Engineer C++ (Senior)",
+        "Company": "Apexver",
+        "Description": "Lead design and optimization of low-latency trading systems. Build high-performance C++ services, mentor engineers, and drive architecture for reliability and speed.",
+        "Location Type": "remote",
+        "Posted At (UTC)": "2026-01-14 13:45",
+        "Job Link": "https://remotive.com/remote-jobs/software-development/software-engineer-c-senior-2069728",
+    },
+    {
+        "Job Title": "Senior Front-End Developer – Analytics & UX Focused",
+        "Company": "Actionable.co",
+        "Description": "Own front-end development of analytics dashboards and UX workflows. Build high-impact, accessible experiences across web and mobile in a remote-first team.",
+        "Location Type": "remote",
+        "Posted At (UTC)": "2026-01-13 18:29",
+        "Job Link": "https://remotive.com/remote-jobs/software-development/senior-front-end-developer-analytics-ux-focused-remote-2088537",
+    },
+    {
+        "Job Title": "WordPress Developer",
+        "Company": "Uncanny Owl",
+        "Description": "Build and maintain WordPress plugin integrations at scale. Own features end-to-end, work with APIs, and deliver high-quality remote work for a global product.",
+        "Location Type": "remote",
+        "Posted At (UTC)": "2026-02-04 21:57",
+        "Job Link": "https://weworkremotely.com/remote-jobs/uncanny-owl-wordpress-developer",
+    },
+    {
+        "Job Title": "Senior Web Developer",
+        "Company": "Zipdev",
+        "Description": "Own high-performance marketing sites using React/Next.js or Astro. Build SEO-optimized, accessible experiences with SSR/SSG and headless CMS platforms.",
+        "Location Type": "remote",
+        "Posted At (UTC)": "2026-02-04 17:40",
+        "Job Link": "https://weworkremotely.com/remote-jobs/zipdev-senior-web-developer",
+    },
+    {
+        "Job Title": "ASP.NET Developer (C#, MVC, SQL Server, JavaScript)",
+        "Company": "Linkage Web Development Solutions",
+        "Description": "Maintain and improve ASP.NET WebForms/MVC applications for U.S. clients. Work remotely with SQL Server and MySQL systems.",
+        "Location Type": "remote",
+        "Posted At (UTC)": "2026-02-04 17:40",
+        "Job Link": "https://weworkremotely.com/remote-jobs/linkage-web-development-asp-net-developer-c-mvc-sql-server-javascript",
+    },
+    {
+        "Job Title": "Senior Software Engineer (Full Stack/DevOps) – India",
+        "Company": "Aspire",
+        "Description": "Drive backend, infrastructure, and developer tooling improvements across a distributed engineering team. Focus on reliability, CI/CD, and cloud operations.",
+        "Location Type": "remote",
+        "Posted At (UTC)": "2026-02-04 17:40",
+        "Job Link": "https://weworkremotely.com/remote-jobs/aspire-senior-software-engineer-full-stack-devops-india",
+    },
+]
+
 # Environment variables
-RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
-RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
-PAYMENT_AMOUNT = int(os.getenv("PAYMENT_AMOUNT", str(DEFAULT_PAYMENT_AMOUNT)))  # in paise
-DB_USER = os.getenv("DB_USER")
-DB_NAME = os.getenv("DB_NAME")
-DB_PASS = os.getenv("DB_PASS")
-DB_HOST = os.getenv("DB_HOST", "localhost")
-
-if not (RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET and GEMINI_API_KEY):
-    raise RuntimeError("Please set RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, GEMINI_API_KEY in .env")
-
-if not all([DB_USER, DB_NAME, DB_PASS, DB_HOST]):
-    raise RuntimeError("Please set DB_USER, DB_NAME, DB_PASS, DB_HOST in .env for MySQL connectivity")
-
-genai.configure(api_key=GEMINI_API_KEY)
 
 app = Flask(__name__)
 
@@ -73,112 +120,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Razorpay client
-rz_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
-
-# In-memory store for preferences and generated file mapping
-# order_id -> {"prefs": {...}, "file_id": str or None, "created_at": datetime}
-ORDERS = {}
-
 GENERATED_DIR = os.path.join(os.path.dirname(__file__), "generated")
 os.makedirs(GENERATED_DIR, exist_ok=True)
-
-
-# ------------------ DB UTILS ------------------
-
-DB_CONFIG = {
-    "user": DB_USER,
-    "password": DB_PASS,
-    "host": DB_HOST,
-    "database": DB_NAME,
-    "autocommit": True,
-}
-
-
-def get_db_connection():
-    """
-    Get a new MySQL connection using environment configuration.
-    """
-    try:
-        return mysql.connector.connect(**DB_CONFIG)
-    except MySQLError as e:
-        logger.error(f"Error connecting to MySQL: {e}", exc_info=True)
-        raise
-
-
-def init_db():
-    """
-    Create required tables if they do not exist.
-    Currently manages the 'transactions' table used to store payment records.
-    """
-    create_transactions_table_sql = """
-        CREATE TABLE IF NOT EXISTS transactions (
-            id BIGINT AUTO_INCREMENT PRIMARY KEY,
-            razorpay_order_id VARCHAR(64) NOT NULL,
-            razorpay_payment_id VARCHAR(64) NOT NULL,
-            amount INT NOT NULL,
-            currency VARCHAR(8) NOT NULL,
-            status VARCHAR(32) NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-        )
-    """
-
-    conn = None
-    cursor = None
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute(create_transactions_table_sql)
-    except MySQLError as e:
-        logger.error(f"Error initializing database: {e}", exc_info=True)
-        raise
-    finally:
-        if cursor is not None:
-            cursor.close()
-        if conn is not None and conn.is_connected():
-            conn.close()
-
-def save_transaction(razorpay_order_id, razorpay_payment_id, amount, currency, status):
-    """
-    Persist a payment transaction record in the database.
-    """
-    sql = """
-        INSERT INTO transactions (
-            razorpay_order_id,
-            razorpay_payment_id,
-            amount,
-            currency,
-            status
-        )
-        VALUES (%s, %s, %s, %s, %s)
-    """
-
-    params = (
-        razorpay_order_id,
-        razorpay_payment_id,
-        amount,
-        currency,
-        status,
-    )
-
-    conn = None
-    cursor = None
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute(sql, params)
-        conn.commit()
-    except MySQLError as e:
-        logger.error(
-            f"Error saving transaction {razorpay_payment_id} for order {razorpay_order_id}: {e}",
-            exc_info=True,
-        )
-        raise
-    finally:
-        if cursor is not None:
-            cursor.close()
-        if conn is not None and conn.is_connected():
-            conn.close()
 
 
 # ------------------ UTILS ------------------
@@ -200,54 +143,12 @@ def strip_html(text):
     return text
 
 
-def gemini_enhance_description(job_title, company, raw_desc, skills, sector):
+def normalize_description(raw_desc):
     """
-    Use Gemini to produce a short, user-friendly job description and optional match score.
+    Normalize raw job descriptions to clean plain text.
     """
-    try:
-        model = genai.GenerativeModel('gemini-2.0-flash')
-        prompt = f"""
-        You are helping a job seeker.
-
-        Job Title: {job_title}
-        Company: {company}
-        Sector: {sector}
-        Raw Description: {raw_desc}
-        Candidate Skills: {', '.join(skills)}
-
-        1) Rewrite a concise 2–3 line description suited for a candidate.
-        2) Give a relevance score from 0 to 100 based on how well the job matches the skills.
-
-        Respond in this exact format:
-        DESCRIPTION: <your short description>
-        SCORE: <number>
-        """
-        res = model.generate_content(prompt)
-        text = (res.text or "").strip()
-
-        desc = ""
-        score = 0
-
-        for line in text.splitlines():
-            line = line.strip()
-            if line.upper().startswith("DESCRIPTION:"):
-                desc = line.split("DESCRIPTION:", 1)[1].strip()
-            elif line.upper().startswith("SCORE:"):
-                try:
-                    score = int(line.split("SCORE:", 1)[1].strip())
-                except ValueError:
-                    score = 0
-
-        if not desc:
-            desc = raw_desc
-        
-        # Strip HTML from the description
-        desc = strip_html(desc)
-
-        return desc, score
-    except Exception as e:
-        logger.error(f"Gemini API error: {e}", exc_info=True)
-        return raw_desc, 0
+    cleaned = strip_html(raw_desc)
+    return cleaned or "See original job post for full role details."
 
 
 def dummy_scrape_jobs(prefs):
@@ -327,22 +228,13 @@ def dummy_scrape_jobs(prefs):
         if location_type and location_type != "any" and j["location_type"].lower() != location_type.lower():
             continue
 
-        enhanced_desc, score = gemini_enhance_description(
-            job_title=j["job_title"],
-            company=j["company"],
-            raw_desc=j["raw_desc"],
-            skills=skills,
-            sector=sector,
-        )
-
         jobs.append({
             "Job Title": j["job_title"],
             "Company": j["company"],
-            "Description": enhanced_desc,
+            "Description": normalize_description(j["raw_desc"]),
             "Location Type": j["location_type"],
             "Posted At (UTC)": j["posted_at"].strftime("%Y-%m-%d %H:%M"),
             "Job Link": j["link"],
-            "Match Score": score,
         })
 
     return jobs
@@ -428,22 +320,13 @@ def fetch_remoteok_jobs(prefs):
         if skills and not any(s in text_blob for s in skills):
             continue
 
-        enhanced_desc, score = gemini_enhance_description(
-            job_title=position,
-            company=company,
-            raw_desc=raw_desc,
-            skills=skills,
-            sector=sector or "IT",
-        )
-
         results.append({
             "Job Title": position,
             "Company": company,
-            "Description": enhanced_desc,
+            "Description": normalize_description(raw_desc),
             "Location Type": "remote",  # RemoteOK is remote
             "Posted At (UTC)": dt.strftime("%Y-%m-%d %H:%M") if dt else "",
             "Job Link": url,        # DIRECT RemoteOK link
-            "Match Score": score,
         })
 
     return results
@@ -505,22 +388,13 @@ def fetch_jobicy_jobs(prefs):
             if sector not in ["it", "engineering"]:
                 continue
 
-        enhanced_desc, score = gemini_enhance_description(
-            job_title=title,
-            company=company,
-            raw_desc=raw_desc,
-            skills=skills,
-            sector=sector or "IT",
-        )
-
         results.append({
             "Job Title": title,
             "Company": company,
-            "Description": enhanced_desc,
+            "Description": normalize_description(raw_desc),
             "Location Type": "remote",
             "Posted At (UTC)": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
             "Job Link": url,
-            "Match Score": score,
         })
 
     return results
@@ -593,22 +467,13 @@ def fetch_remotive_jobs(prefs):
             if sector not in ["it", "engineering"]:
                 continue
 
-        enhanced_desc, score = gemini_enhance_description(
-            job_title=title,
-            company=company,
-            raw_desc=raw_desc,
-            skills=skills,
-            sector=sector or "IT",
-        )
-
         results.append({
             "Job Title": title,
             "Company": company,
-            "Description": enhanced_desc,
+            "Description": normalize_description(raw_desc),
             "Location Type": "remote",
             "Posted At (UTC)": dt.strftime("%Y-%m-%d %H:%M") if dt else "",
             "Job Link": url,
-            "Match Score": score,
         })
 
     return results
@@ -681,22 +546,13 @@ def fetch_weworkremotely_jobs(prefs):
             if sector not in ["it", "engineering"]:
                 continue
 
-        enhanced_desc, score = gemini_enhance_description(
-            job_title=title,
-            company=company or "Unknown",
-            raw_desc=raw_desc,
-            skills=skills,
-            sector=sector or "IT",
-        )
-
         results.append({
             "Job Title": title,
             "Company": company or "Unknown",
-            "Description": enhanced_desc,
+            "Description": normalize_description(raw_desc),
             "Location Type": "remote",
             "Posted At (UTC)": dt.strftime("%Y-%m-%d %H:%M") if dt else "",
             "Job Link": url,
-            "Match Score": score,
         })
 
     return results
@@ -769,22 +625,13 @@ def fetch_eu_remote_jobs(prefs):
             if sector not in ["it", "engineering"]:
                 continue
 
-        enhanced_desc, score = gemini_enhance_description(
-            job_title=title,
-            company=company or "Unknown",
-            raw_desc=raw_desc,
-            skills=skills,
-            sector=sector or "IT",
-        )
-
         results.append({
             "Job Title": title,
             "Company": company or "Unknown",
-            "Description": enhanced_desc,
+            "Description": normalize_description(raw_desc),
             "Location Type": "remote",
             "Posted At (UTC)": dt.strftime("%Y-%m-%d %H:%M") if dt else "",
             "Job Link": url,
-            "Match Score": score,
         })
 
     return results
@@ -854,22 +701,13 @@ def fetch_himalayas_jobs(prefs):
                 if sector not in ["it", "engineering"]:
                     continue
 
-            enhanced_desc, score = gemini_enhance_description(
-                job_title=title,
-                company=company or "Unknown",
-                raw_desc="",
-                skills=skills,
-                sector=sector or "IT",
-            )
-
             results.append({
                 "Job Title": title,
                 "Company": company or "Unknown",
-                "Description": enhanced_desc,
+                "Description": "See original job post for full role details.",
                 "Location Type": "remote",
                 "Posted At (UTC)": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
                 "Job Link": url,
-                "Match Score": score,
             })
         except Exception as e:
             logger.debug(f"Error processing Himalayas job card: {e}")
@@ -940,22 +778,13 @@ def fetch_remote_co_jobs(prefs):
                 if sector not in ["it", "engineering"]:
                     continue
 
-            enhanced_desc, score = gemini_enhance_description(
-                job_title=title,
-                company="Unknown",
-                raw_desc="",
-                skills=skills,
-                sector=sector or "IT",
-            )
-
             results.append({
                 "Job Title": title,
                 "Company": "Unknown",
-                "Description": enhanced_desc,
+                "Description": "See original job post for full role details.",
                 "Location Type": "remote",
                 "Posted At (UTC)": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
                 "Job Link": url,
-                "Match Score": score,
             })
         except Exception as e:
             logger.debug(f"Error processing Remote.co job listing: {e}")
@@ -1058,7 +887,6 @@ def generate_excel(jobs):
             "Location Type": "",
             "Posted At (UTC)": "",
             "Job Link": "",
-            "Match Score": "",
         }]
 
     df = pd.DataFrame(jobs)
@@ -1077,11 +905,11 @@ def generate_excel(jobs):
 @app.route("/", methods=["GET"])
 def index():
     base_url = request.url_root.rstrip('/')
+    sample_jobs = PRELOADED_JOBS[:8]
     return render_template(
         "index.html",
-        razorpay_key_id=RAZORPAY_KEY_ID,
-        payment_amount=PAYMENT_AMOUNT,
-        base_url=base_url
+        base_url=base_url,
+        sample_jobs=sample_jobs,
     )
 
 
@@ -1097,6 +925,12 @@ def privacy_policy():
     base_url = request.url_root.rstrip('/')
     return render_template("privacy_policy.html", base_url=base_url)
 
+@app.route("/blog", methods=["GET"])
+def blog():
+    """Blog landing page"""
+    base_url = request.url_root.rstrip('/')
+    return render_template("blog.html", base_url=base_url)
+
 
 @app.route("/sitemap.xml", methods=["GET"])
 def sitemap():
@@ -1109,6 +943,12 @@ def sitemap():
     <lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>{base_url}/blog</loc>
+    <lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>{base_url}/privacy-policy</loc>
@@ -1126,11 +966,12 @@ def robots():
     base_url = request.url_root.rstrip('/')
     robots_content = f"""User-agent: *
 Allow: /
-Allow: /privacy-policy
+Disallow: /admin
+Disallow: /login
+Disallow: /dashboard
 Disallow: /download/
 Disallow: /generated/
-Disallow: /verify_payment
-Disallow: /create_order
+Disallow: /generate_jobs
 
 Sitemap: {base_url}/sitemap.xml
 """
@@ -1199,152 +1040,43 @@ def validate_preferences(data):
     }
 
 
-@app.route("/create_order", methods=["POST"])
-def create_order():
+@app.route("/generate_jobs", methods=["POST"])
+def generate_jobs():
     """
-    Step 1: Receive job preferences + create Razorpay order.
+    Generate job matches without payment.
     """
     data = request.json or {}
 
-    # Validate preferences
     is_valid, error_msg, prefs = validate_preferences(data)
     if not is_valid:
         app.logger.warning(f"Invalid preferences provided: {error_msg}")
         return jsonify({"success": False, "error": error_msg}), 400
 
-    # Prepare order
-    order_data = {
-        "amount": PAYMENT_AMOUNT,
-        "currency": "INR",
-        "payment_capture": 1,
-    }
-
     try:
-        order = rz_client.order.create(data=order_data)
-        order_id = order["id"]
-    except Exception as e:
-        app.logger.error(f"Error creating Razorpay order: {e}", exc_info=True)
-        return jsonify(
-            {
-                "success": False,
-                "error": "Failed to create payment order. Please try again.",
-            }
-        ), 500
-
-    # Store preferences in memory mapped to order_id
-    ORDERS[order_id] = {
-        "prefs": prefs,
-        "file_id": None,
-        "created_at": datetime.now(timezone.utc),
-    }
-
-    app.logger.info(
-        f"Created order {order_id} for preferences: {prefs['sector']}, {prefs['job_location']}"
-    )
-
-    return jsonify(
-        {
-            "order_id": order_id,
-            "amount": PAYMENT_AMOUNT,
-            "currency": "INR",
-        }
-    )
-
-
-@app.route("/verify_payment", methods=["POST"])
-def verify_payment():
-    """
-    Step 2: Frontend sends payment_id + order_id + signature for verification.
-    If valid → run scraper → generate Excel → return download URL.
-    """
-    data = request.json or {}
-
-    razorpay_payment_id = data.get("razorpay_payment_id")
-    razorpay_order_id = data.get("razorpay_order_id")
-    razorpay_signature = data.get("razorpay_signature")
-
-    if not all([razorpay_payment_id, razorpay_order_id, razorpay_signature]):
-        return jsonify({"success": False, "error": "Missing payment fields"}), 400
-
-    # Verify signature
-    params_dict = {
-        'razorpay_order_id': razorpay_order_id,
-        'razorpay_payment_id': razorpay_payment_id,
-        'razorpay_signature': razorpay_signature
-    }
-
-    try:
-        rz_client.utility.verify_payment_signature(params_dict)
-    except razorpay.errors.SignatureVerificationError as e:
-        app.logger.warning(f"Payment verification failed for order {razorpay_order_id}: {e}")
-        return jsonify({"success": False, "error": "Payment verification failed"}), 400
-    except Exception as e:
-        app.logger.error(f"Error verifying payment signature: {e}", exc_info=True)
-        return jsonify({"success": False, "error": "Payment verification error"}), 500
-
-    # Persist successful transaction details in DB (best-effort, do not block flow)
-    try:
-        save_transaction(
-            razorpay_order_id=razorpay_order_id,
-            razorpay_payment_id=razorpay_payment_id,
-            amount=PAYMENT_AMOUNT,
-            currency="INR",
-            status="success",
-        )
-    except MySQLError:
-        # Log and continue; we don't want to break the user flow if logging fails
-        app.logger.error(
-            f"Failed to persist transaction for order {razorpay_order_id}",
-            exc_info=True,
-        )
-
-    # Fetch preferences from in-memory store
-    order_data = ORDERS.get(razorpay_order_id)
-    if not order_data:
-        return jsonify({"success": False, "error": "Order not found"}), 404
-
-    prefs = order_data["prefs"]
-
-    # Scrape jobs + generate Excel with comprehensive error handling
-    try:
-        app.logger.info(f"Starting job fetch for order {razorpay_order_id}")
+        app.logger.info("Starting job fetch for free request")
         jobs = fetch_all_jobs(prefs)
-        
-        if not jobs:
-            app.logger.warning(f"No jobs found for order {razorpay_order_id} with preferences: {prefs}")
-            # Still generate an empty file so user gets something
-        
-        app.logger.info(f"Fetched {len(jobs)} jobs, generating Excel file...")
         file_id = generate_excel(jobs)
-
-        # Store file_id back in memory
-        order_data["file_id"] = file_id
-
-        app.logger.info(
-            f"Successfully generated file {file_id} for order {razorpay_order_id}"
-        )
-
         download_url = f"/download/{file_id}"
-
         return jsonify({"success": True, "download_url": download_url})
     except requests.RequestException as e:
-        app.logger.error(f"Network error fetching jobs for order {razorpay_order_id}: {e}", exc_info=True)
+        app.logger.error(f"Network error fetching jobs: {e}", exc_info=True)
         return jsonify({
             "success": False,
             "error": "Failed to fetch job listings from external sources. Please try again later."
         }), 500
     except pd.errors.ExcelWriterError as e:
-        app.logger.error(f"Excel generation error for order {razorpay_order_id}: {e}", exc_info=True)
+        app.logger.error(f"Excel generation error: {e}", exc_info=True)
         return jsonify({
             "success": False,
             "error": "Failed to generate Excel file. Please contact support."
         }), 500
     except Exception as e:
-        app.logger.error(f"Unexpected error generating jobs for order {razorpay_order_id}: {e}", exc_info=True)
+        app.logger.error(f"Unexpected error generating jobs: {e}", exc_info=True)
         return jsonify({
             "success": False,
             "error": "An unexpected error occurred while generating your job listings. Please contact support."
         }), 500
+
 
 
 @app.route("/download/<file_id>", methods=["GET"])
@@ -1379,8 +1111,5 @@ def download_file(file_id):
 
 
 if __name__ == "__main__":
-    # Initialize DB schema (creates tables if they don't exist)
-    init_db()
-
     # For development only
     app.run(debug=True)

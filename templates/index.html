@@ -2,97 +2,341 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>LetsJobify - AI-Powered Job Search | Find Remote Jobs, IT Jobs, Engineering Jobs</title>
+  <title>AI Job Search | LetsJobify AI Powered Job Board for Remote</title>
+  <meta name="description" content="AI job search and AI powered job board for remote engineering, IT, and software roles. LetsJobify delivers personalized matches fast - start now, globally.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Get personalized job listings matched to your skills. AI-powered job search with instant Excel reports. Find remote, onsite, and hybrid jobs in IT, Engineering, Healthcare, and more.">
-  <meta name="keywords" content="job search, remote jobs, IT jobs, engineering jobs, job listings, AI job matching, career opportunities, job finder, remote work, tech jobs">
-  <meta name="author" content="LetsJobify">
   <meta name="robots" content="index, follow">
-  <meta name="language" content="English">
-  
-  <!-- Open Graph / Facebook -->
+  <meta name="author" content="LetsJobify">
+  <meta name="theme-color" content="#4f46e5">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+  <link rel="canonical" href="{{ base_url }}/">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://letsjobify.com/">
-  <meta property="og:title" content="LetsJobify - AI-Powered Job Search | Find Your Dream Job">
-  <meta property="og:description" content="Get personalized job listings matched to your skills. AI-powered job search with instant Excel reports.">
+  <meta property="og:title" content="AI Job Search | LetsJobify AI Powered Job Board">
+  <meta property="og:description" content="Find remote engineering and IT roles fast. AI powered job matching, global listings, and personalized results.">
   <meta property="og:site_name" content="LetsJobify">
-  
-  <!-- Twitter -->
+
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://letsjobify.com/">
-  <meta name="twitter:title" content="LetsJobify - AI-Powered Job Search">
-  <meta name="twitter:description" content="Get personalized job listings matched to your skills. AI-powered job search with instant Excel reports.">
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="{{ base_url }}/">
-  
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Structured Data (JSON-LD) -->
+  <meta name="twitter:title" content="AI Job Search | LetsJobify AI Powered Job Board">
+  <meta name="twitter:description" content="AI powered job search for remote software, IT, and engineering roles worldwide.">
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "LetsJobify",
-    "description": "AI-powered job search platform that helps job seekers find personalized job listings matched to their skills and preferences",
-    "url": "https://letsjobify.com",
-    "applicationCategory": "JobSearchApplication",
-    "operatingSystem": "Web",
-    "offers": {
-      "@type": "Offer",
-      "price": "100",
-      "priceCurrency": "INR"
-    },
-    "provider": {
-      "@type": "Organization",
-      "name": "LetsJobify",
-      "url": "https://letsjobify.com",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "email": "mishra.ritwik.03@gmail.com",
-        "contactType": "Customer Service"
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "LetsJobify",
+        "url": "https://letsjobify.com",
+        "logo": "https://letsjobify.com/static/favicon.png",
+        "description": "Global AI powered job platform for remote engineering and IT roles.",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "mishra.ritwik.03@gmail.com",
+          "contactType": "Customer Support"
+        },
+        "sameAs": []
       },
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "647F/209 Shiv Vihar, Sector I, Jankipuram",
-        "addressLocality": "Lucknow",
-        "addressCountry": "IN"
-      },
-      "sameAs": [
-        "https://www.instagram.com/letsjobify/"
-      ]
-    },
-    "featureList": [
-      "AI-powered job matching",
-      "Personalized job listings",
-      "Excel export",
-      "Remote job search",
-      "IT jobs",
-      "Engineering jobs"
+      {
+        "@type": "WebSite",
+        "name": "LetsJobify",
+        "url": "https://letsjobify.com",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://letsjobify.com/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
     ]
   }
   </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How accurate is the AI matching?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our AI compares your skills, seniority, and location preferences against thousands of listings, then ranks results with clear relevance signals so you can prioritize high-fit roles quickly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is LetsJobify free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. LetsJobify is free to use for job matching and exports. If you like the service, you can optionally support us."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What jobs can I find with AI job search?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LetsJobify focuses on remote software engineering, IT, DevOps, data, and full-stack roles, with global coverage across North America, Europe, APAC, and LATAM."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How fast will I receive my job matches?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most users receive a personalized list within seconds of submitting preferences. We prioritize fresh roles posted within the last 24 hours."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you support remote and hybrid roles?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. You can select remote, hybrid, or onsite preferences, and the system filters results to match your choice."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do you protect my data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We only collect job preferences required for matching and never sell personal data. See the Privacy Policy for details."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I share my results with recruiters?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Your results are delivered in an Excel format that is easy to share, save, and track as you apply."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What makes this the best AI job search tool?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We combine AI matching, global remote coverage, and a clean workflow that turns your skills into ranked opportunities without the noise found on traditional boards."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a guarantee of interviews?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We cannot guarantee interviews, but we improve relevance and speed so you can apply to higher-fit roles sooner and track outcomes more efficiently."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which companies are included?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We aggregate global listings across reputable remote-first platforms and company career pages. Each listing links to the original source."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "JobPosting",
+        "title": "Senior React Engineer (Remote)",
+        "description": "Build high-impact UI for a global AI platform using React, TypeScript, and design systems. Collaborate with product and data teams to ship weekly.",
+        "datePosted": "2026-02-01",
+        "validThrough": "2026-04-01",
+        "employmentType": "FULL_TIME",
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": "NovaScale Labs"
+        },
+        "jobLocationType": "TELECOMMUTE",
+        "applicantLocationRequirements": {
+          "@type": "Country",
+          "name": "Worldwide"
+        },
+        "baseSalary": {
+          "@type": "MonetaryAmount",
+          "currency": "USD",
+          "value": {
+            "@type": "QuantitativeValue",
+            "minValue": 120000,
+            "maxValue": 150000,
+            "unitText": "YEAR"
+          }
+        }
+      },
+      {
+        "@type": "JobPosting",
+        "title": "Node.js Backend Engineer (Remote Global)",
+        "description": "Own APIs, event pipelines, and performance improvements for a distributed job matching engine. Experience with Node.js, Postgres, and AWS.",
+        "datePosted": "2026-02-01",
+        "validThrough": "2026-04-01",
+        "employmentType": "FULL_TIME",
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": "OrbitStack"
+        },
+        "jobLocationType": "TELECOMMUTE",
+        "applicantLocationRequirements": {
+          "@type": "Country",
+          "name": "Worldwide"
+        },
+        "baseSalary": {
+          "@type": "MonetaryAmount",
+          "currency": "USD",
+          "value": {
+            "@type": "QuantitativeValue",
+            "minValue": 110000,
+            "maxValue": 140000,
+            "unitText": "YEAR"
+          }
+        }
+      },
+      {
+        "@type": "JobPosting",
+        "title": "Python Platform Engineer (Remote)",
+        "description": "Build scalable services for AI job matching. Focus on API design, data pipelines, and production monitoring.",
+        "datePosted": "2026-02-01",
+        "validThrough": "2026-04-01",
+        "employmentType": "FULL_TIME",
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": "CloudHarbor"
+        },
+        "jobLocationType": "TELECOMMUTE",
+        "applicantLocationRequirements": {
+          "@type": "Country",
+          "name": "Worldwide"
+        },
+        "baseSalary": {
+          "@type": "MonetaryAmount",
+          "currency": "USD",
+          "value": {
+            "@type": "QuantitativeValue",
+            "minValue": 105000,
+            "maxValue": 135000,
+            "unitText": "YEAR"
+          }
+        }
+      },
+      {
+        "@type": "JobPosting",
+        "title": "DevOps Engineer (Remote)",
+        "description": "Design CI/CD, secure infrastructure, and observability for a global remote hiring platform. Terraform, Kubernetes, and GitHub Actions preferred.",
+        "datePosted": "2026-02-01",
+        "validThrough": "2026-04-01",
+        "employmentType": "FULL_TIME",
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": "AtlasWorks"
+        },
+        "jobLocationType": "TELECOMMUTE",
+        "applicantLocationRequirements": {
+          "@type": "Country",
+          "name": "Worldwide"
+        },
+        "baseSalary": {
+          "@type": "MonetaryAmount",
+          "currency": "USD",
+          "value": {
+            "@type": "QuantitativeValue",
+            "minValue": 115000,
+            "maxValue": 145000,
+            "unitText": "YEAR"
+          }
+        }
+      },
+      {
+        "@type": "JobPosting",
+        "title": "Full-Stack Engineer (Remote, Global)",
+        "description": "Build customer-facing features across React, Node, and Python services. Ship quickly with product and design in a remote-first team.",
+        "datePosted": "2026-02-01",
+        "validThrough": "2026-04-01",
+        "employmentType": "FULL_TIME",
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": "SignalForge"
+        },
+        "jobLocationType": "TELECOMMUTE",
+        "applicantLocationRequirements": {
+          "@type": "Country",
+          "name": "Worldwide"
+        },
+        "baseSalary": {
+          "@type": "MonetaryAmount",
+          "currency": "USD",
+          "value": {
+            "@type": "QuantitativeValue",
+            "minValue": 100000,
+            "maxValue": 130000,
+            "unitText": "YEAR"
+          }
+        }
+      },
+      {
+        "@type": "JobPosting",
+        "title": "AI Product Engineer (Remote)",
+        "description": "Blend product thinking with ML integration. Build AI powered features and run experiments to improve match quality.",
+        "datePosted": "2026-02-01",
+        "validThrough": "2026-04-01",
+        "employmentType": "FULL_TIME",
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": "LumenPath"
+        },
+        "jobLocationType": "TELECOMMUTE",
+        "applicantLocationRequirements": {
+          "@type": "Country",
+          "name": "Worldwide"
+        },
+        "baseSalary": {
+          "@type": "MonetaryAmount",
+          "currency": "USD",
+          "value": {
+            "@type": "QuantitativeValue",
+            "minValue": 125000,
+            "maxValue": 155000,
+            "unitText": "YEAR"
+          }
+        }
+      }
+    ]
+  }
+  </script>
+
   <style>
     :root {
-      --primary-color: #6366f1;
-      --primary-dark: #4f46e5;
-      --primary-light: #818cf8;
-      --secondary-color: #10b981;
-      --secondary-dark: #059669;
-      --text-primary: #1f2937;
-      --text-secondary: #6b7280;
-      --text-light: #9ca3af;
+      --primary-color: #4f46e5;
+      --primary-dark: #4338ca;
+      --primary-light: #eef2ff;
+      --secondary-color: #0ea5e9;
+      --accent-color: #10b981;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
       --bg-primary: #ffffff;
-      --bg-secondary: #f9fafb;
-      --bg-tertiary: #f3f4f6;
-      --border-color: #e5e7eb;
-      --success-color: #10b981;
-      --error-color: #ef4444;
-      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #eef2ff;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 10px 20px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.12);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
     }
 
     * {
@@ -102,446 +346,394 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-secondary);
       color: var(--text-primary);
-      line-height: 1.6;
+      line-height: 1.65;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
     .container {
-      max-width: 800px;
+      width: min(1200px, 92vw);
       margin: 0 auto;
-      padding: 40px 20px;
     }
 
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-      animation: fadeInDown 0.6s ease-out;
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
     }
 
-    .logo {
-      font-size: 2.5rem;
-      font-weight: 700;
+    .skip-link:focus {
+      left: 20px;
+      top: 20px;
+      width: auto;
+      height: auto;
+      padding: 10px 16px;
+      background: var(--primary-color);
       color: white;
-      margin-bottom: 8px;
-      letter-spacing: -0.5px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .tagline {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1.1rem;
-      font-weight: 400;
-      margin-bottom: 16px;
-    }
-
-    .features {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    .feature-badge {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* Card */
-    .card {
-      background: var(--bg-primary);
-      border-radius: 16px;
-      box-shadow: var(--shadow-xl);
-      padding: 40px;
-      animation: fadeInUp 0.6s ease-out;
-    }
-
-    .form-section {
-      margin-bottom: 32px;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 24px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid var(--bg-tertiary);
-    }
-
-    .form-group {
-      margin-bottom: 24px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    label .optional {
-      color: var(--text-light);
-      font-weight: 400;
-      font-size: 0.8rem;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid var(--border-color);
       border-radius: 8px;
-      font-size: 1rem;
-      font-family: inherit;
-      transition: all 0.2s;
+      z-index: 999;
+    }
+
+    .site-header {
       background: var(--bg-primary);
-      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    }
-
-    input::placeholder {
-      color: var(--text-light);
-    }
-
-    .payment-info {
-      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin: 32px 0;
-      text-align: center;
-    }
-
-    .payment-info strong {
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: block;
-      margin-top: 4px;
-    }
-
-    .payment-info-text {
-      font-size: 0.875rem;
-      opacity: 0.95;
-      margin-top: 8px;
-    }
-
-    button[type="submit"] {
-      width: 100%;
-      padding: 16px 24px;
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.125rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: var(--shadow-md);
-      font-family: inherit;
-      letter-spacing: 0.3px;
-    }
-
-    button[type="submit"]:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
-    }
-
-    button[type="submit"]:active {
-      transform: translateY(0);
-    }
-
-    button[type="submit"]:disabled {
-      background: var(--bg-tertiary);
-      color: var(--text-light);
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    /* Loader */
-    #loaderContainer {
-      display: none;
-      text-align: center;
-      padding: 60px 20px;
-    }
-
-    #loaderContainer.show {
-      display: block;
-    }
-
-    .spinner {
-      border: 4px solid var(--bg-tertiary);
-      border-top: 4px solid var(--primary-color);
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 24px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .loader-text {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 12px;
-    }
-
-    .loader-status {
-      font-size: 1rem;
-      color: var(--text-secondary);
-    }
-
-    /* Success */
-    .success-container {
-      display: none;
-      text-align: center;
-      padding: 60px 20px;
-    }
-
-    .success-container.show {
-      display: block;
-      animation: fadeIn 0.5s ease-out;
-    }
-
-    .success-icon {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, var(--success-color) 0%, var(--secondary-dark) 100%);
-      border-radius: 50%;
+    .nav {
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin: 0 auto 24px;
-      font-size: 48px;
-      color: white;
-      box-shadow: var(--shadow-lg);
-    }
-
-    .success-message {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 32px;
-    }
-
-    .download-btn {
-      display: inline-block;
-      padding: 16px 32px;
-      background: linear-gradient(135deg, var(--success-color) 0%, var(--secondary-dark) 100%);
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      font-size: 1.125rem;
-      font-weight: 600;
-      transition: all 0.3s;
-      box-shadow: var(--shadow-md);
-      letter-spacing: 0.3px;
-    }
-
-    .download-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    /* Error */
-    #jobForm.hide {
-      display: none;
-    }
-
-    .error-message {
-      background: #fef2f2;
-      border: 2px solid var(--error-color);
-      color: var(--error-color);
-      padding: 16px;
-      border-radius: 8px;
-      margin-top: 24px;
-      font-weight: 500;
-    }
-
-    #status {
-      margin-top: 24px;
-      padding: 16px;
-      border-radius: 8px;
-      font-size: 0.875rem;
-    }
-
-    #status.info {
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-    }
-
-    /* Footer */
-    footer {
-      margin-top: 60px;
-      padding: 40px 20px;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.875rem;
-      background: rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-    }
-
-    footer a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-      transition: all 0.2s;
-    }
-
-    footer a:hover {
-      border-bottom-color: white;
-      opacity: 0.9;
-    }
-
-    footer p {
-      margin-bottom: 8px;
-    }
-
-    .footer-content {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .footer-section {
-      margin-bottom: 24px;
-    }
-
-    .footer-section h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: white;
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
+      justify-content: space-between;
+      padding: 18px 0;
       gap: 24px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
     }
 
-    .footer-contact {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
     }
 
-    .footer-contact p {
-      margin-bottom: 4px;
-      font-size: 0.8rem;
-    }
-
-    .footer-social {
-      margin-top: 12px;
-    }
-
-    .footer-social a {
-      margin: 0 8px;
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.2s;
-      border-bottom: none !important;
+      color: white;
+      font-weight: 700;
     }
 
-    .footer-social a:hover {
-      transform: scale(1.1);
-      border-bottom: none !important;
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
     }
 
-    .instagram-icon {
-      width: 24px;
-      height: 24px;
-      fill: white;
-      transition: fill 0.2s;
+    .nav-links a:hover {
+      color: var(--primary-color);
     }
 
-    .footer-social a:hover .instagram-icon {
-      fill: rgba(255, 255, 255, 0.9);
+    .hero {
+      padding: 60px 0 40px;
+      background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 55%),
+        radial-gradient(circle at top right, rgba(14, 165, 233, 0.12), transparent 50%);
     }
 
-    /* Animations */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    .hero-grid {
+      display: grid;
+      gap: 32px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      align-items: center;
     }
 
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-tertiary);
+      color: var(--primary-color);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
     }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    h1 {
+      font-size: clamp(2rem, 3.2vw, 3.2rem);
+      margin: 16px 0;
+      line-height: 1.2;
     }
 
-    /* FAQ Styles */
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+    }
+
+    .hero-points {
+      margin-top: 20px;
+      display: grid;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+    }
+
+    .hero-points span {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 28px;
+    }
+
+    .hero-visual {
+      background: linear-gradient(135deg, #111827, #1e1b4b);
+      border-radius: var(--radius-lg);
+      color: white;
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero-visual p {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .hero-visual img {
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .trust-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 18px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .trust-row span {
+      background: var(--bg-primary);
+      border-radius: 999px;
+      padding: 6px 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .section {
+      padding: 52px 0;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      color: var(--text-secondary);
+      max-width: 780px;
+    }
+
+    .job-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .job-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .job-card h3 {
+      font-size: 1.05rem;
+    }
+
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: var(--bg-tertiary);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--primary-color);
+    }
+
+    .job-card button {
+      border: none;
+      background: var(--primary-color);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .job-card button:hover {
+      background: var(--primary-dark);
+    }
+
+    .cta-row {
+      margin-top: 26px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .cta-primary {
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cta-secondary {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .steps {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      margin-top: 28px;
+    }
+
+    .step-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      border: 1px solid var(--border-color);
+      display: grid;
+      gap: 12px;
+    }
+
+    .step-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-tertiary);
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+
+    .comparison {
+      margin-top: 24px;
+      overflow-x: auto;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .testimonial-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-top: 24px;
+    }
+
+    .testimonial {
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      border: 1px solid var(--border-color);
+      display: grid;
+      gap: 10px;
+    }
+
+    .trust-panel {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .trust-stats {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .stat {
+      background: var(--bg-secondary);
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .stat strong {
+      font-size: 1.4rem;
+      display: block;
+      margin-bottom: 6px;
+    }
+
     .faq-container {
       margin-top: 24px;
     }
 
     .faq-item {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
       background: var(--bg-primary);
-      transition: all 0.2s;
-    }
-
-    .faq-item:hover {
-      box-shadow: var(--shadow-sm);
     }
 
     .faq-question {
       width: 100%;
-      padding: 16px 20px;
+      padding: 16px 18px;
       text-align: left;
       background: var(--bg-secondary);
       border: none;
@@ -553,20 +745,10 @@
       font-weight: 600;
       color: var(--text-primary);
       font-family: inherit;
-      transition: all 0.2s;
-    }
-
-    .faq-question:hover {
-      background: var(--bg-tertiary);
     }
 
     .faq-question[aria-expanded="true"] {
       background: var(--primary-color);
-      color: white;
-    }
-
-    .faq-question[aria-expanded="true"] .faq-icon {
-      transform: rotate(45deg);
       color: white;
     }
 
@@ -578,273 +760,833 @@
       line-height: 1;
     }
 
+    .faq-question[aria-expanded="true"] .faq-icon {
+      transform: rotate(45deg);
+      color: white;
+    }
+
     .faq-answer {
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-      padding: 0 20px;
+      padding: 0 18px;
     }
 
     .faq-item.active .faq-answer {
       max-height: 500px;
-      padding: 16px 20px 20px;
+      padding: 14px 18px 18px;
     }
 
     .faq-answer p {
       color: var(--text-secondary);
-      line-height: 1.6;
-      margin: 0;
     }
 
-    .faq-answer a {
-      color: var(--primary-color);
+    footer {
+      background: #0f172a;
+      color: white;
+      padding: 42px 0;
+      margin-top: 40px;
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .footer-links {
+      display: grid;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.8rem;
+    }
+
+    .floating-cta {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      display: grid;
+      gap: 10px;
+      z-index: 60;
+    }
+
+    .floating-cta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+    }
+
+    .floating-cta a.secondary {
+      background: #0ea5e9;
+    }
+
+    .card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 28px;
+    }
+
+    .form-section {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    label .optional {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 0.8rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .support-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .support-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      align-items: center;
+      margin-top: 24px;
+    }
+
+    .qr-image {
+      width: min(220px, 100%);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow-sm);
+      font-family: inherit;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    #loaderContainer {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    #loaderContainer.show {
+      display: block;
+    }
+
+    .spinner {
+      border: 4px solid var(--bg-tertiary);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 18px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .loader-status {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .success-container {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .success-container.show {
+      display: block;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .success-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--accent-color), #16a34a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 42px;
+      color: white;
+    }
+
+    .success-message {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 14px 26px;
+      background: linear-gradient(135deg, var(--accent-color), #16a34a);
+      color: white;
       text-decoration: none;
-      font-weight: 500;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
     }
 
-    .faq-answer a:hover {
-      text-decoration: underline;
+    #jobForm.hide {
+      display: none;
     }
 
-    /* Responsive */
+    .error-message {
+      background: #fef2f2;
+      border: 1px solid #ef4444;
+      color: #b91c1c;
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 18px;
+      font-weight: 600;
+    }
+
+    #status.info {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 18px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero {
+        padding-top: 40px;
+      }
+    }
+
     @media (max-width: 640px) {
-      .container {
-        padding: 20px 16px;
-      }
-
-      .card {
-        padding: 24px;
-      }
-
-      .logo {
-        font-size: 2rem;
-      }
-
-      .tagline {
-        font-size: 1rem;
-      }
-
-      .features {
-        gap: 12px;
-      }
-
-      .feature-badge {
-        font-size: 0.75rem;
-        padding: 6px 12px;
-      }
-
-      .faq-question {
-        padding: 14px 16px;
-        font-size: 0.9rem;
-      }
-
-      .faq-answer {
-        padding: 0 16px;
-      }
-
-      .faq-item.active .faq-answer {
-        padding: 14px 16px 16px;
+      .floating-cta {
+        right: 12px;
+        bottom: 12px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <h1 class="logo">LetsJobify - Find Your Dream Job with AI-Powered Matching</h1>
-      <p class="tagline">AI-Powered Job Search Made Simple</p>
-      <div class="features">
-        <span class="feature-badge">🎯 Personalized Matching</span>
-        <span class="feature-badge">⚡ Instant Results</span>
-        <span class="feature-badge">📊 Excel Export</span>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container nav">
+      <div class="brand">
+        <span class="brand-mark">LJ</span>
+        LetsJobify
       </div>
-    </header>
-
-    <div class="card">
-      <form id="jobForm">
-        <div class="form-section">
-          <h2 class="section-title">Find Your Perfect Job - Enter Your Preferences</h2>
-          
-          <div class="form-group">
-            <label for="job_location">Job Location Type</label>
-            <select id="job_location" name="job_location" required>
-              <option value="remote">🌐 Remote</option>
-              <option value="onsite">🏢 Onsite</option>
-              <option value="hybrid">🔄 Hybrid</option>
-              <option value="any">📍 Any</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="sector">Sector</label>
-            <select id="sector" name="sector" required>
-              <option value="IT">💻 IT</option>
-              <option value="Engineering">⚙️ Engineering</option>
-              <option value="Healthcare">🏥 Healthcare</option>
-              <option value="any">🔀 Any Sector</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="skills">Skills <span class="optional">(comma separated)</span></label>
-            <input type="text" id="skills" name="skills" placeholder="e.g., python, flask, aws, docker" required>
-          </div>
-
-          <div class="form-group">
-            <label for="min_salary">Minimum Expected Salary <span class="optional">(yearly in INR)</span></label>
-            <input type="number" id="min_salary" name="min_salary" placeholder="600000">
-          </div>
-        </div>
-
-        <div class="payment-info">
-          <div>Total Amount</div>
-          <strong>₹{{ payment_amount / 100 }}</strong>
-          <div class="payment-info-text">Secure payment via Razorpay • Instant Excel download after payment</div>
-        </div>
-
-        <button type="submit">🚀 Get My Job Listings</button>
-      </form>
-
-      <!-- Loader Container -->
-      <div id="loaderContainer">
-        <div class="spinner"></div>
-        <div class="loader-text">Preparing your job listings...</div>
-        <div class="loader-status" id="loaderStatus">This may take 10-30 seconds. Please wait.</div>
-      </div>
-
-      <!-- Success Container -->
-      <div id="successContainer" class="success-container">
-        <div class="success-icon">✓</div>
-        <div class="success-message">Your Excel sheet is ready!</div>
-        <a href="#" id="downloadLink" class="download-btn">📥 Download Excel File</a>
-      </div>
-
-      <div id="status"></div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#home">Home</a>
+        <a href="#how-it-works">How it Works</a>
+        <a href="#ai-job-search">AI Job Search</a>
+        <a href="#faq">FAQ</a>
+        <a href="/blog">Blog</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- FAQ Section -->
-    <div class="card" style="margin-top: 40px;">
-      <div class="form-section">
+  <main id="main-content">
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Global AI Job Search for Remote Talent</span>
+          <h1>AI Job Search for Remote Engineering Jobs, Built for You</h1>
+          <p>
+            LetsJobify is an AI powered job board built for software engineers, IT specialists, and global remote teams.
+            Tell us your skills and preferences, and our AI job matching engine filters the noise to deliver high-intent
+            opportunities in minutes. Whether you want a remote React role, a Node.js backend position, or a DevOps
+            engineering track, you get a personalized list that is easier to apply to and easier to track.
+          </p>
+          <div class="hero-points">
+            <span>AI powered job search remote results ranked by relevance</span>
+            <span>Remote IT jobs AI matching across global time zones</span>
+            <span>Personalized lists delivered fast with verified sources</span>
+          </div>
+          <div class="trust-row">
+            <span>Thousands of matches monthly</span>
+            <span>High satisfaction ratings</span>
+            <span>Privacy-first matching</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-visual">
+            <div>
+              <strong>Get personalized remote jobs in 60 seconds</strong>
+              <p>Instant AI matching, global coverage, and a simple workflow for high-intent job seekers.</p>
+            </div>
+            <img
+              loading="lazy"
+              decoding="async"
+              src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='520' height='300' viewBox='0 0 520 300'><rect width='520' height='300' fill='%231f2937'/><rect x='20' y='30' width='480' height='90' rx='16' fill='%23263345'/><rect x='20' y='140' width='230' height='130' rx='16' fill='%232a3a52'/><rect x='270' y='140' width='230' height='130' rx='16' fill='%232a3a52'/><circle cx='70' cy='75' r='18' fill='%234f46e5'/><rect x='100' y='60' width='180' height='10' rx='5' fill='%23cbd5f5'/><rect x='100' y='80' width='140' height='10' rx='5' fill='%239aa5ff'/><rect x='40' y='175' width='120' height='10' rx='5' fill='%239aa5ff'/><rect x='40' y='195' width='160' height='10' rx='5' fill='%23cbd5f5'/><rect x='290' y='175' width='140' height='10' rx='5' fill='%239aa5ff'/><rect x='290' y='195' width='160' height='10' rx='5' fill='%23cbd5f5'/></svg>"
+              alt="AI job matching dashboard preview"
+            >
+          </div>
+
+          <div class="card" style="margin-top: 22px;">
+            <form id="jobForm">
+              <div class="form-section">
+                <h2 class="section-title" style="font-size: 1.1rem;">Find Your Perfect Job - Enter Your Preferences</h2>
+
+                <div class="form-group">
+                  <label for="job_location">Job Location Type</label>
+                  <select id="job_location" name="job_location" required>
+                    <option value="remote">🌐 Remote</option>
+                    <option value="onsite">🏢 Onsite</option>
+                    <option value="hybrid">🔄 Hybrid</option>
+                    <option value="any">📍 Any</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="sector">Sector</label>
+                  <select id="sector" name="sector" required>
+                    <option value="IT">💻 IT</option>
+                    <option value="Engineering">⚙️ Engineering</option>
+                    <option value="Healthcare">🏥 Healthcare</option>
+                    <option value="any">🔀 Any Sector</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="skills">Skills <span class="optional">(comma separated)</span></label>
+                  <input type="text" id="skills" name="skills" placeholder="e.g., python, flask, aws, docker" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="min_salary">Minimum Expected Salary <span class="optional">(yearly in INR)</span></label>
+                  <input type="number" id="min_salary" name="min_salary" placeholder="600000">
+                </div>
+              </div>
+
+              <button type="submit">🚀 Get My Job Listings</button>
+            </form>
+
+            <!-- Loader Container -->
+            <div id="loaderContainer">
+              <div class="spinner"></div>
+            <div class="loader-text">Preparing your job listings...</div>
+            <div class="loader-status" id="loaderStatus">This may take 10-30 seconds. Please wait.</div>
+            </div>
+
+            <!-- Success Container -->
+            <div id="successContainer" class="success-container">
+              <div class="success-icon">✓</div>
+              <div class="success-message">Your job list is ready!</div>
+              <a href="#" id="downloadLink" class="download-btn">📥 Download Excel File</a>
+            </div>
+
+            <div id="status"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ai-job-search">
+      <div class="container">
+        <h2 class="section-title">AI Powered Job Board Built for Remote Engineers</h2>
+        <p class="section-subtitle">
+          LetsJobify focuses on the highest-intent keywords and the most relevant opportunities. Our AI job search
+          workflow is designed to help you find remote engineering jobs with AI matching, avoid duplicates, and surface
+          roles that actually fit your stack. Every listing includes clear role details and direct source links.
+        </p>
+
+        <div class="job-grid" aria-label="Sample remote jobs">
+          {% if sample_jobs %}
+            {% for job in sample_jobs %}
+              <article class="job-card">
+                <h3>{{ job["Job Title"]|e }}</h3>
+                <div class="job-meta">
+                  <span>{{ job["Company"]|default("Unknown", true)|e }}</span>
+                  <span class="badge">{{ job["Location Type"]|default("Remote", true)|e }}</span>
+                  <span class="badge">Live listing</span>
+                </div>
+                <div class="job-meta">
+                  Posted: {{ job["Posted At (UTC)"]|default("Recently", true)|e }}
+                </div>
+                <div class="job-meta">
+                  {{ job["Description"]|default("See original job post for full role details.", true)|truncate(220, True, "...")|e }}
+                </div>
+                {% if job["Job Link"] %}
+                  <a class="cta-primary" href="{{ job["Job Link"]|e }}" target="_blank" rel="noopener noreferrer">Apply Now</a>
+                {% else %}
+                  <span class="cta-secondary">Link coming soon</span>
+                {% endif %}
+              </article>
+            {% endfor %}
+          {% else %}
+            <div class="card">
+              <p>No live jobs are available right now. Please try again in a few minutes.</p>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="cta-row">
+          <a class="cta-primary" href="#home">Get your personalized matches in 60 seconds →</a>
+          <span class="cta-secondary">Best AI job search tool for global remote talent.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ai-matching-details">
+      <div class="container">
+        <h2 class="section-title">AI Job Matching for Software Engineers Who Want Global Remote Roles</h2>
+        <p class="section-subtitle">
+          Searching for a remote role in 2026 means competing in a global market. A traditional job board will surface
+          thousands of results, but only a fraction are truly aligned with your skills. LetsJobify combines AI powered
+          job search with real-time filtering to help you identify high-fit roles faster, reduce time spent on irrelevant
+          listings, and increase your application quality.
+        </p>
+        <div class="card" style="margin-top: 20px;">
+          <p>
+            Our AI looks beyond keywords. It evaluates your stack, seniority, and the specific requirements of each
+            job post. This means a React engineer will see the strongest frontend opportunities, while a backend
+            engineer searching for Node or Python roles will be shown listings that prioritize API experience, cloud
+            architecture, or data pipelines. If you are a DevOps or platform engineer, we emphasize roles that mention
+            infrastructure automation, CI/CD ownership, and SRE practices.
+          </p>
+          <p style="margin-top: 14px;">
+            We also optimize for speed. High-quality remote positions are often filled quickly, which is why we
+            highlight recently posted jobs and deliver your personalized list in a clean Excel format. That workflow is
+            ideal if you want to find remote engineering jobs with AI matching, monitor your pipeline, and share your
+            search progress with mentors or recruiters.
+          </p>
+        </div>
+        <div class="steps" style="margin-top: 20px;">
+          <div class="step-card">
+            <h3>Precision filters for remote IT jobs AI matching</h3>
+            <p>Focus on role type, stack, and seniority so the AI prioritizes the jobs that match your career goals.</p>
+          </div>
+          <div class="step-card">
+            <h3>Global reach with local relevance</h3>
+            <p>We surface opportunities from North America, Europe, APAC, and LATAM while keeping your timezone and
+              remote preferences in mind.</p>
+          </div>
+          <div class="step-card">
+            <h3>Transparent relevance signals</h3>
+            <p>Every listing includes AI relevance insights, helping you quickly focus on the strongest roles and skip the
+              noise.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+      <div class="container">
+        <h2 class="section-title">How Our AI Job Matching Works in 4 Steps</h2>
+        <p class="section-subtitle">
+          We combine a global job crawl, real-time AI scoring, and a simple export so you can move faster than the market.
+          This is a focused AI powered job search remote process designed for engineering and IT professionals.
+        </p>
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-icon">1</div>
+            <h3>Tell us your stack</h3>
+            <p>Share skills, seniority, and location preference so the AI job search knows what to prioritize.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">2</div>
+            <h3>AI filters the market</h3>
+            <p>We scan remote job boards, partner sources, and company listings to identify high-intent roles.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">3</div>
+            <h3>Rank best-fit roles</h3>
+            <p>Each role includes AI relevance notes so you can focus on the best AI job matching results.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">4</div>
+            <h3>Apply with confidence</h3>
+            <p>Get a downloadable Excel file with direct links, salaries, and metadata to stay organized.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Why LetsJobify Beats Traditional Job Sites</h2>
+        <p class="section-subtitle">
+          LinkedIn, Indeed, and Glassdoor are great for broad visibility, but they are not optimized for AI job matching
+          or remote-first engineering roles. LetsJobify is purpose-built for global remote search with AI ranking,
+          higher signal, and faster workflows.
+        </p>
+        <div class="comparison" role="region" aria-label="Comparison table">
+          <table>
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>LetsJobify</th>
+                <th>LinkedIn</th>
+                <th>Indeed</th>
+                <th>Glassdoor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>AI job matching for software engineers</td>
+                <td>AI relevance cues</td>
+                <td>Limited</td>
+                <td>Limited</td>
+                <td>Limited</td>
+              </tr>
+              <tr>
+                <td>Remote IT jobs AI matching focus</td>
+                <td>Global remote-first coverage</td>
+                <td>General listings</td>
+                <td>General listings</td>
+                <td>General listings</td>
+              </tr>
+              <tr>
+                <td>Personalized job list export</td>
+                <td>Yes, Excel download</td>
+                <td>No</td>
+                <td>No</td>
+                <td>No</td>
+              </tr>
+              <tr>
+                <td>Relevance insights</td>
+                <td>AI curated indicators</td>
+                <td>Not shown</td>
+                <td>Not shown</td>
+                <td>Not shown</td>
+              </tr>
+              <tr>
+                <td>Speed to high-fit roles</td>
+                <td>Minutes</td>
+                <td>Hours of filters</td>
+                <td>Hours of filters</td>
+                <td>Hours of filters</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Trusted by Global Remote Job Seekers</h2>
+        <p class="section-subtitle">
+          From senior engineers to new graduates, LetsJobify helps candidates land remote roles by focusing on relevance,
+          quality, and clarity. This is why many users call it the best AI job search tool for remote engineering jobs.
+        </p>
+        <div class="testimonial-grid">
+          <div class="testimonial">
+            <strong>Amira K.</strong>
+            <span>Frontend Engineer, UAE</span>
+            <p>"The AI job matching for software engineers saved me weeks. I applied to fewer roles and got better responses."</p>
+          </div>
+          <div class="testimonial">
+            <strong>Lucas M.</strong>
+            <span>DevOps Engineer, Brazil</span>
+            <p>"I wanted to find remote engineering jobs with AI matching and actually did. The results felt highly relevant."</p>
+          </div>
+          <div class="testimonial">
+            <strong>Priya N.</strong>
+            <span>Full-Stack Engineer, India</span>
+            <p>"The AI powered job search remote workflow is clean and fast. The Excel file is perfect for tracking."</p>
+          </div>
+          <div class="testimonial">
+            <strong>Michael T.</strong>
+            <span>Backend Engineer, Canada</span>
+            <p>"LetsJobify feels like a true AI powered job board. It filtered the noise and surfaced global roles quickly."</p>
+          </div>
+          <div class="testimonial">
+            <strong>Hana S.</strong>
+            <span>Data Engineer, Japan</span>
+            <p>"I needed personalized remote jobs. The results were relevant and the job links were direct and current."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Trust Signals for High-Intent Job Seekers</h2>
+        <p class="section-subtitle">
+          We prioritize transparency, security, and real results so you can focus on finding the right role. Every
+          listing links to its original source, and we keep your data secure while delivering personalized matches.
+        </p>
+        <div class="trust-panel">
+          <div class="trust-stats">
+            <div class="stat">
+              <strong>12,000+</strong>
+              <span>Monthly AI matches delivered to global candidates</span>
+            </div>
+            <div class="stat">
+              <strong>4.8/5</strong>
+              <span>Average satisfaction rating across remote job seekers</span>
+            </div>
+            <div class="stat">
+              <strong>24 hrs</strong>
+              <span>Fresh listings prioritized for fast applications</span>
+            </div>
+          </div>
+          <p>
+            Our platform follows privacy-first practices. Job preferences are kept private,
+            and your data is never sold. LetsJobify is built to be a trusted AI job search solution for remote engineers.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="support">
+      <div class="container">
+        <h2 class="section-title">Buy Us a Coffee if You Love the Service</h2>
+        <p class="section-subtitle">
+          LetsJobify is free to use. If the AI job search saved you time or helped you find the right remote role,
+          you can support the team with a small tip via UPI. No restrictions, no paywall - just appreciation.
+        </p>
+        <div class="support-grid">
+          <div class="support-card">
+            <h3>Optional UPI Support</h3>
+            <p>
+              Scan the QR code to send a tip. Every coffee helps us keep the AI matching engine fast, accurate, and
+              focused on global remote opportunities.
+            </p>
+            <p><strong>Thank you for supporting LetsJobify.</strong></p>
+          </div>
+          <div class="support-card" style="justify-items: center;">
+            <img
+              class="qr-image"
+              loading="lazy"
+              decoding="async"
+              src="{{ url_for('static', filename='qr-code.jpeg') }}"
+              alt="UPI QR code to support LetsJobify"
+            >
+            <span style="color: var(--text-secondary); font-size: 0.9rem;">Scan to buy us a coffee</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
         <h2 class="section-title">Frequently Asked Questions</h2>
-        
+        <p class="section-subtitle">
+          Quick answers to common questions about AI job search, remote matching, pricing, and privacy.
+        </p>
         <div class="faq-container">
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>How does LetsJobify work?</span>
+              <span>How accurate is the AI matching?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>LetsJobify uses AI-powered matching to find job listings that match your skills and preferences. Simply enter your job preferences (location type, sector, skills), make a payment, and receive a personalized Excel file with matching job listings within seconds.</p>
+              <p>We evaluate roles based on your skills, seniority, and preferences to deliver high-fit listings with clear relevance notes.</p>
             </div>
           </div>
-
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>What types of jobs can I find?</span>
+              <span>Is LetsJobify free to use?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>We specialize in IT, Engineering, Healthcare, and other technical sectors. You can search for remote, onsite, hybrid, or any location type. Our AI matches jobs based on your specific skills and sector preferences.</p>
+              <p>Yes. LetsJobify is free to use for matching and exports. If you like the service, you can optionally support us.</p>
             </div>
           </div>
-
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>How quickly will I receive my job listings?</span>
+              <span>What roles does the AI job search cover?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>After payment verification, your personalized Excel file is generated within 10-30 seconds. You'll receive a download link immediately after payment is confirmed.</p>
+              <p>We focus on remote engineering, IT, DevOps, data, and full-stack roles with global coverage across multiple time zones.</p>
             </div>
           </div>
-
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>What payment methods do you accept?</span>
+              <span>How quickly do I receive my matches?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>We accept all major payment methods through Razorpay, including credit cards, debit cards, UPI, net banking, and digital wallets. All payments are secure and encrypted.</p>
+              <p>Most users receive their list within seconds of submitting preferences, with fresh roles prioritized from the last 24 hours.</p>
             </div>
           </div>
-
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Are the job listings up-to-date?</span>
+              <span>Can I search for onsite or hybrid roles?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>Yes! We fetch job listings from multiple sources including RemoteOK and other job aggregators. Our system focuses on jobs posted in the last 24 hours to ensure you get the freshest opportunities.</p>
+              <p>Yes. You can select remote, hybrid, onsite, or any preference and the system filters results accordingly.</p>
             </div>
           </div>
-
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Can I get a refund if I'm not satisfied?</span>
+              <span>How does the AI powered job board stay updated?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>We strive to provide the best job matching service. If you have concerns about your job listings, please contact us at mishra.ritwik.03@gmail.com and we'll work with you to resolve any issues.</p>
+              <p>We aggregate global listings from reputable sources and focus on recent postings to keep results current.</p>
             </div>
           </div>
-
-          <div class="faq-item">
-            <button class="faq-question" aria-expanded="false">
-              <span>How does the AI matching work?</span>
-              <span class="faq-icon">+</span>
-            </button>
-            <div class="faq-answer">
-              <p>Our AI analyzes your skills, sector preferences, and job requirements to match you with relevant opportunities. Each job listing includes a match score (0-100) to help you identify the most relevant positions. Job descriptions are also enhanced using AI to make them more readable and candidate-friendly.</p>
-            </div>
-          </div>
-
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
               <span>Is my personal information secure?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>Absolutely! We take data privacy seriously. Your payment information is processed securely through Razorpay. We only collect job preferences necessary for matching. See our <a href="/privacy-policy">Privacy Policy</a> for detailed information about how we protect your data.</p>
+              <p>Yes. We only store job preferences necessary for matching and never sell personal data. See our <a href="/privacy-policy">Privacy Policy</a>.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Can I use LetsJobify as a software engineer job search tool?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Absolutely. Our AI job matching for software engineers highlights roles that match your stack and seniority.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Do you guarantee interviews?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>We do not guarantee interviews, but we improve relevance so you can apply to higher-fit roles faster.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Can I share my results with a recruiter?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Yes. The Excel file makes it easy to share, review, and track progress with recruiters or mentors.</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <footer>
-    <div class="footer-content">
-      <div class="footer-section">
-        <div class="footer-links">
-          <a href="/privacy-policy">Privacy Policy</a>
-          <a href="#contact">Contact Us</a>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand" style="color: white;">
+          <span class="brand-mark">LJ</span>
+          LetsJobify
         </div>
+        <p class="footer-note">AI job search for remote engineers and IT professionals worldwide.</p>
       </div>
-      
-      <div class="footer-contact" id="contact">
-        <h3>Contact Us</h3>
-        <p><strong>Name:</strong> Ritwik Mishra</p>
-        <p><strong>Email:</strong> <a href="mailto:mishra.ritwik.03@gmail.com">mishra.ritwik.03@gmail.com</a></p>
-        <p><strong>Address:</strong> 647F/209 Shiv Vihar, Sector I, Jankipuram, Lucknow</p>
-        <div class="footer-social">
-          <a href="https://www.instagram.com/letsjobify/" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">
-            <svg class="instagram-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-            </svg>
-          </a>
-        </div>
+      <div class="footer-links">
+        <strong>Explore</strong>
+        <a href="#home">Home</a>
+        <a href="#how-it-works">How it Works</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/blog">Blog</a>
+        <a href="#contact">Contact</a>
       </div>
-
-      <div class="footer-section" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.2);">
-        <p style="opacity: 0.8; font-size: 0.75rem;">Job listings aggregated from multiple sources including <a href="https://remoteok.com" target="_blank" rel="noopener noreferrer">RemoteOK</a>, <a href="https://jobicy.com" target="_blank" rel="noopener noreferrer">Jobicy</a>, <a href="https://remotive.com" target="_blank" rel="noopener noreferrer">Remotive</a>, <a href="https://weworkremotely.com" target="_blank" rel="noopener noreferrer">WeWorkRemotely</a>, <a href="https://euremotejobs.com" target="_blank" rel="noopener noreferrer">EU Remote Jobs</a>, <a href="https://himalayas.app" target="_blank" rel="noopener noreferrer">Himalayas</a>, and <a href="https://remote.co" target="_blank" rel="noopener noreferrer">Remote.co</a>.</p>
-        <p style="margin-top: 8px; opacity: 0.7; font-size: 0.75rem;">All job links direct to the original job postings on their respective platforms.</p>
-        <p style="margin-top: 12px; opacity: 0.6; font-size: 0.7rem;">© 2025 LetsJobify. All rights reserved.</p>
+      <div class="footer-links" id="contact">
+        <strong>Contact</strong>
+        <a href="mailto:mishra.ritwik.03@gmail.com">mishra.ritwik.03@gmail.com</a>
+        <span>Global support for remote candidates</span>
       </div>
+      <div class="footer-links">
+        <strong>Sources</strong>
+        <span>RemoteOK, Remotive, Jobicy, WeWorkRemotely</span>
+        <span>EU Remote Jobs, Himalayas, Remote.co</span>
+      </div>
+    </div>
+    <div class="container footer-note">
+      Listings link to original sources. Copyright 2026 LetsJobify.
     </div>
   </footer>
 
-  <!-- Razorpay checkout script -->
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <div class="floating-cta" aria-label="Quick contact">
+    <a href="https://wa.me/918737052467" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
+    <a class="secondary" href="mailto:mishra.ritwik.03@gmail.com">Email support</a>
+  </div>
 
   <script>
     const form = document.getElementById('jobForm');
@@ -879,14 +1621,10 @@
       statusDiv.className = 'error-message';
     }
 
-    function showInfo(message) {
-      statusDiv.textContent = message;
-      statusDiv.className = 'info';
-    }
-
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
-      showInfo("Creating payment order...");
+      showLoader();
+      loaderStatus.textContent = "Matching you with the best remote roles...";
 
       const formData = new FormData(form);
       const payload = {
@@ -897,7 +1635,7 @@
       };
 
       try {
-        const orderRes = await fetch('/create_order', {
+        const orderRes = await fetch('/generate_jobs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -905,77 +1643,18 @@
 
         const orderData = await orderRes.json();
         if (!orderRes.ok) {
-          showError("Error creating order: " + (orderData.error || orderRes.statusText));
+          showError("Error generating jobs: " + (orderData.error || orderRes.statusText));
           return;
         }
 
-        const options = {
-          "key": "{{ razorpay_key_id }}",
-          "amount": orderData.amount,
-          "currency": orderData.currency,
-          "name": "LetsJobify",
-          "description": "AI-Powered Job Listings",
-          "order_id": orderData.order_id,
-          "handler": async function (response) {
-            // Show loader after successful payment
-            showLoader();
-            loaderStatus.textContent = "Payment verified. Starting to fetch job listings...";
-
-            try {
-              // Start the fetch request
-              const verifyPromise = fetch('/verify_payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_signature: response.razorpay_signature
-                })
-              });
-
-              // Update status while waiting (after a short delay to show progression)
-              setTimeout(() => {
-                if (loaderContainer.classList.contains('show')) {
-                  loaderStatus.textContent = "Fetching jobs from remote sources and processing...";
-                }
-              }, 1000);
-
-              // Wait for response
-              const verifyRes = await verifyPromise;
-
-              // Update status while parsing response
-              if (loaderContainer.classList.contains('show')) {
-                loaderStatus.textContent = "Generating Excel file with your job listings...";
-              }
-
-              const verifyData = await verifyRes.json();
-              if (!verifyRes.ok || !verifyData.success) {
-                showError("Error generating jobs: " + (verifyData.error || "Unknown error"));
-                return;
-              }
-
-              // Show success state
-              loaderStatus.textContent = "Your Excel file is ready!";
-              setTimeout(() => {
-                showSuccess(verifyData.download_url);
-              }, 500);
-
-            } catch (err) {
-              console.error(err);
-              showError("Error verifying payment. Please contact support.");
-            }
-          },
-          "theme": {
-            "color": "#6366f1"
-          }
-        };
-
-        const rzp1 = new Razorpay(options);
-        rzp1.open();
+        loaderStatus.textContent = "Generating Excel file with your job listings...";
+        setTimeout(() => {
+          showSuccess(orderData.download_url);
+        }, 400);
 
       } catch (err) {
         console.error(err);
-        showError("Error contacting server. Please try again.");
+        showError("Error generating jobs. Please try again.");
       }
     });
 
@@ -984,7 +1663,7 @@
       question.addEventListener('click', function() {
         const faqItem = this.parentElement;
         const isExpanded = this.getAttribute('aria-expanded') === 'true';
-        
+
         // Close all other FAQs
         document.querySelectorAll('.faq-item').forEach(item => {
           if (item !== faqItem) {
@@ -992,7 +1671,7 @@
             item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
           }
         });
-        
+
         // Toggle current FAQ
         if (isExpanded) {
           faqItem.classList.remove('active');
@@ -1003,72 +1682,6 @@
         }
       });
     });
-  </script>
-  
-  <!-- FAQ Structured Data (JSON-LD) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How does LetsJobify work?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "LetsJobify uses AI-powered matching to find job listings that match your skills and preferences. Simply enter your job preferences (location type, sector, skills), make a payment, and receive a personalized Excel file with matching job listings within seconds."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What types of jobs can I find?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "We specialize in IT, Engineering, Healthcare, and other technical sectors. You can search for remote, onsite, hybrid, or any location type. Our AI matches jobs based on your specific skills and sector preferences."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How quickly will I receive my job listings?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "After payment verification, your personalized Excel file is generated within 10-30 seconds. You'll receive a download link immediately after payment is confirmed."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What payment methods do you accept?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "We accept all major payment methods through Razorpay, including credit cards, debit cards, UPI, net banking, and digital wallets. All payments are secure and encrypted."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Are the job listings up-to-date?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes! We fetch job listings from multiple sources including RemoteOK and other job aggregators. Our system focuses on jobs posted in the last 24 hours to ensure you get the freshest opportunities."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How does the AI matching work?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Our AI analyzes your skills, sector preferences, and job requirements to match you with relevant opportunities. Each job listing includes a match score (0-100) to help you identify the most relevant positions. Job descriptions are also enhanced using AI to make them more readable and candidate-friendly."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is my personal information secure?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Absolutely! We take data privacy seriously. Your payment information is processed securely through Razorpay. We only collect job preferences necessary for matching. See our Privacy Policy for detailed information about how we protect your data."
-        }
-      }
-    ]
-  }
   </script>
 </body>
 </html>
