@@ -6,3 +6,4 @@ requests==2.32.3
 python-dateutil==2.9.0.post0
 beautifulsoup4==4.12.3
 feedparser==6.0.11
+flask-limiter==3.8.0

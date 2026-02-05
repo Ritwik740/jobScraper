@@ -6,6 +6,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dateutil import parser as dateparser
 from bs4 import BeautifulSoup
 import feedparser
@@ -20,6 +21,9 @@ from flask import (
 )
 import pandas as pd
 from dotenv import load_dotenv
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # ------------------ CONFIG ------------------
 
@@ -104,6 +108,8 @@ PRELOADED_JOBS = [
 FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
+limiter = Limiter(get_remote_address, app=app, default_limits=[])
 
 # Secret key from environment variable (required in production)
 if FLASK_SECRET_KEY:
@@ -794,81 +800,35 @@ def fetch_remote_co_jobs(prefs):
 
 def fetch_all_jobs(prefs):
     """
-    Combine multiple job sources:
+    Combine multiple job sources with parallel fetch:
       - RemoteOK (global remote IT/Engineering)
       - Jobicy (remote jobs)
       - Remotive (remote jobs)
       - WeWorkRemotely (remote jobs RSS)
       - EU Remote Jobs (remote jobs RSS)
-      - Dummy/placeholder jobs (for India/local/onsite/hybrid) as fallback
+      - Remote.co (web scraping)
     """
     jobs = []
+    sources = {
+        "RemoteOK": fetch_remoteok_jobs,
+        "Jobicy": fetch_jobicy_jobs,
+        "Remotive": fetch_remotive_jobs,
+        "WeWorkRemotely": fetch_weworkremotely_jobs,
+        "EU Remote Jobs": fetch_eu_remote_jobs,
+        # Himalayas scraping is disabled due to instability.
+        "Remote.co": fetch_remote_co_jobs,
+    }
 
-    # 1. Try RemoteOK (global remote IT/Engineering)
-    try:
-        remote_jobs = fetch_remoteok_jobs(prefs)
-        jobs.extend(remote_jobs)
-        logger.info(f"Fetched {len(remote_jobs)} jobs from RemoteOK")
-    except Exception as e:
-        logger.error(f"Error in fetch_remoteok_jobs: {e}", exc_info=True)
-
-    # 2. Try Jobicy (remote jobs API)
-    try:
-        jobicy_jobs = fetch_jobicy_jobs(prefs)
-        jobs.extend(jobicy_jobs)
-        logger.info(f"Fetched {len(jobicy_jobs)} jobs from Jobicy")
-    except Exception as e:
-        logger.error(f"Error in fetch_jobicy_jobs: {e}", exc_info=True)
-
-    # 3. Try Remotive (remote jobs API)
-    try:
-        remotive_jobs = fetch_remotive_jobs(prefs)
-        jobs.extend(remotive_jobs)
-        logger.info(f"Fetched {len(remotive_jobs)} jobs from Remotive")
-    except Exception as e:
-        logger.error(f"Error in fetch_remotive_jobs: {e}", exc_info=True)
-
-    # 4. Try WeWorkRemotely (RSS feed)
-    try:
-        wwr_jobs = fetch_weworkremotely_jobs(prefs)
-        jobs.extend(wwr_jobs)
-        logger.info(f"Fetched {len(wwr_jobs)} jobs from WeWorkRemotely")
-    except Exception as e:
-        logger.error(f"Error in fetch_weworkremotely_jobs: {e}", exc_info=True)
-
-    # 5. Try EU Remote Jobs (RSS feed)
-    try:
-        eu_jobs = fetch_eu_remote_jobs(prefs)
-        jobs.extend(eu_jobs)
-        logger.info(f"Fetched {len(eu_jobs)} jobs from EU Remote Jobs")
-    except Exception as e:
-        logger.error(f"Error in fetch_eu_remote_jobs: {e}", exc_info=True)
-
-    # 6. Try Himalayas (web scraping)
-    try:
-        himalayas_jobs = fetch_himalayas_jobs(prefs)
-        jobs.extend(himalayas_jobs)
-        logger.info(f"Fetched {len(himalayas_jobs)} jobs from Himalayas")
-    except Exception as e:
-        logger.error(f"Error in fetch_himalayas_jobs: {e}", exc_info=True)
-
-    # 7. Try Remote.co (web scraping)
-    try:
-        remote_co_jobs = fetch_remote_co_jobs(prefs)
-        jobs.extend(remote_co_jobs)
-        logger.info(f"Fetched {len(remote_co_jobs)} jobs from Remote.co")
-    except Exception as e:
-        logger.error(f"Error in fetch_remote_co_jobs: {e}", exc_info=True)
-
-    # 8. For onsite/hybrid / India-specific, keep dummy for now
-    #    or if other sources returned nothing, still give user something.
-    if not jobs or (prefs.get("job_location") in ["onsite", "hybrid"]):
-        try:
-            dummy_jobs = dummy_scrape_jobs(prefs)
-            jobs.extend(dummy_jobs)
-            logger.info(f"Fetched {len(dummy_jobs)} dummy jobs")
-        except Exception as e:
-            logger.error(f"Error in dummy_scrape_jobs: {e}", exc_info=True)
+    with ThreadPoolExecutor(max_workers=6) as executor:
+        future_map = {executor.submit(fn, prefs): name for name, fn in sources.items()}
+        for future in as_completed(future_map):
+            name = future_map[future]
+            try:
+                source_jobs = future.result()
+                jobs.extend(source_jobs)
+                logger.info(f"Fetched {len(source_jobs)} jobs from {name}")
+            except Exception as e:
+                logger.error(f"Error in {name} fetch: {e}", exc_info=True)
 
     return jobs
 
@@ -1041,6 +1001,7 @@ def validate_preferences(data):
 
 
 @app.route("/generate_jobs", methods=["POST"])
+@limiter.limit("5 per hour")
 def generate_jobs():
     """
     Generate job matches without payment.
@@ -1055,6 +1016,11 @@ def generate_jobs():
     try:
         app.logger.info("Starting job fetch for free request")
         jobs = fetch_all_jobs(prefs)
+        if not jobs:
+            return jsonify({
+                "success": False,
+                "error": "Couldn't fetch jobs for the above details. Please try again in a few minutes."
+            }), 502
         file_id = generate_excel(jobs)
         download_url = f"/download/{file_id}"
         return jsonify({"success": True, "download_url": download_url})
