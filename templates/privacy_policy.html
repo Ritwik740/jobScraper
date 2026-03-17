@@ -2,234 +2,363 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Privacy Policy - LetsJobify | Data Protection & Privacy</title>
+  <title>Privacy Policy – LetsJobify</title>
+  <meta name="description" content="LetsJobify Privacy Policy: how we collect, use, and protect your data when using our remote job matching service.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Privacy Policy for LetsJobify - Learn how we protect your data for AI-powered job search and remote role matching.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ base_url }}/privacy-policy">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1038359027856443" crossorigin="anonymous"></script>
+
   <style>
     :root {
-      --primary-color: #6366f1;
-      --primary-dark: #4f46e5;
-      --text-primary: #1f2937;
-      --text-secondary: #6b7280;
-      --bg-primary: #ffffff;
-      --bg-secondary: #f9fafb;
-      --border-color: #e5e7eb;
+      --ink: #0f172a;
+      --ink-2: #334155;
+      --ink-3: #64748b;
+      --ink-4: #94a3b8;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --accent: #6366f1;
+      --accent-dark: #4f46e5;
+      --accent-light: #eef2ff;
+      --border: #e2e8f0;
+      --radius: 14px;
+      --radius-lg: 20px;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: var(--text-primary);
-      line-height: 1.6;
-      padding: 40px 20px;
+      font-family:'DM Sans', system-ui, sans-serif;
+      background:var(--surface-2); color:var(--ink);
+      line-height:1.7; -webkit-font-smoothing:antialiased;
+    }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+
+    .container { width:min(1100px, 92vw); margin:0 auto; }
+
+    /* ── Header ── */
+    .site-header {
+      background:var(--surface); border-bottom:1px solid var(--border);
+      position:sticky; top:0; z-index:50;
+    }
+    .nav {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 0; gap:24px; flex-wrap:wrap;
+    }
+    .brand {
+      display:flex; align-items:center; gap:10px;
+      font-weight:600; font-size:1.05rem; letter-spacing:-0.02em;
+      color:var(--ink); text-decoration:none;
+    }
+    .brand-mark {
+      width:34px; height:34px; border-radius:9px;
+      background:linear-gradient(135deg,var(--accent),#818cf8);
+      display:inline-flex; align-items:center; justify-content:center;
+      color:white; font-weight:700; font-size:0.82rem;
+    }
+    .nav-links {
+      display:flex; align-items:center; gap:20px;
+      font-size:0.9rem; color:var(--ink-3); flex-wrap:wrap;
+    }
+    .nav-links a { color:var(--ink-3); }
+    .nav-links a:hover { color:var(--accent); text-decoration:none; }
+
+    /* ── Page layout ── */
+    .page-wrap { padding:52px 0 72px; }
+    .page-inner {
+      display:grid; grid-template-columns:1fr 280px;
+      gap:40px; align-items:start;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: var(--bg-primary);
-      border-radius: 16px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-      padding: 40px;
+    /* ── Prose ── */
+    .prose-header { margin-bottom:36px; }
+    .prose-label {
+      font-size:0.78rem; font-weight:600; letter-spacing:.06em;
+      text-transform:uppercase; color:var(--accent); margin-bottom:10px;
+    }
+    .prose-title {
+      font-family:'DM Serif Display', Georgia, serif;
+      font-size:clamp(1.8rem,2.6vw,2.6rem);
+      line-height:1.18; letter-spacing:-0.02em; margin-bottom:12px;
+    }
+    .prose-meta { font-size:0.87rem; color:var(--ink-4); }
+
+    .prose {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius-lg); padding:40px;
+    }
+    .prose h2 {
+      font-size:1.1rem; font-weight:600; color:var(--ink);
+      margin:32px 0 10px; padding-bottom:8px;
+      border-bottom:1px solid var(--border);
+    }
+    .prose h2:first-of-type { margin-top:0; }
+    .prose h3 { font-size:0.98rem; font-weight:600; margin:20px 0 8px; }
+    .prose p { color:var(--ink-2); font-size:0.95rem; line-height:1.85; margin-bottom:14px; }
+    .prose ul { margin-left:20px; margin-bottom:14px; }
+    .prose li { color:var(--ink-2); font-size:0.95rem; line-height:1.8; margin-bottom:5px; }
+    .prose strong { color:var(--ink); font-weight:600; }
+
+    /* ── Sidebar ── */
+    .sidebar { display:grid; gap:18px; }
+    .sidebar-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:20px;
+    }
+    .sidebar-card h4 { font-size:0.92rem; font-weight:600; margin-bottom:10px; }
+    .sidebar-card p { font-size:0.87rem; color:var(--ink-3); line-height:1.65; margin-bottom:8px; }
+    .sidebar-card a { font-size:0.87rem; }
+    .cta-card {
+      background:var(--accent-light); border:1px solid #c7d2fe;
+      border-radius:var(--radius); padding:20px;
+    }
+    .cta-card h4 { font-size:0.92rem; font-weight:600; margin-bottom:8px; color:var(--accent-dark); }
+    .cta-card p { font-size:0.87rem; color:var(--ink-2); line-height:1.65; margin-bottom:12px; }
+    .cta-card a.btn {
+      background:var(--accent); color:white;
+      padding:9px 16px; border-radius:8px;
+      font-weight:600; font-size:0.87rem; display:inline-block;
+      text-decoration:none;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid var(--bg-secondary);
+    /* ── Footer ── */
+    footer {
+      background:#0f172a; color:rgba(255,255,255,.8);
+      padding:36px 0 20px;
+    }
+    .footer-inner {
+      display:flex; flex-wrap:wrap; gap:28px;
+      justify-content:space-between; margin-bottom:20px;
+    }
+    .footer-col strong { display:block; color:white; margin-bottom:9px; font-size:0.88rem; }
+    .footer-col a, .footer-col span {
+      display:block; font-size:0.85rem; margin-bottom:5px; color:rgba(255,255,255,.5);
+    }
+    .footer-col a:hover { color:white; text-decoration:none; }
+    .footer-bottom {
+      border-top:1px solid rgba(255,255,255,.1); padding-top:14px;
+      font-size:0.8rem; color:rgba(255,255,255,.3);
     }
 
-    .header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      margin-bottom: 8px;
-    }
-
-    .header p {
-      color: var(--text-secondary);
-      font-size: 1rem;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-bottom: 24px;
-      color: var(--primary-color);
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .back-link:hover {
-      color: var(--primary-dark);
-      text-decoration: underline;
-    }
-
-    .content {
-      color: var(--text-primary);
-    }
-
-    .content h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-top: 32px;
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .content h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-top: 24px;
-      margin-bottom: 12px;
-    }
-
-    .content p {
-      margin-bottom: 16px;
-      color: var(--text-secondary);
-    }
-
-    .content ul {
-      margin-left: 24px;
-      margin-bottom: 16px;
-      color: var(--text-secondary);
-    }
-
-    .content li {
-      margin-bottom: 8px;
-    }
-
-    .last-updated {
-      text-align: center;
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-    }
-
-    @media (max-width: 640px) {
-      .container {
-        padding: 24px;
-      }
-
-      .header h1 {
-        font-size: 2rem;
-      }
+    @media(max-width:800px) {
+      .page-inner { grid-template-columns:1fr; }
+      .prose { padding:24px; }
     }
   </style>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1038359027856443"
-     crossorigin="anonymous"></script>
 </head>
 <body>
-  <div class="container">
-    <a href="/" class="back-link">← Back to Home</a>
-    
-    <div class="header">
-      <h1>Privacy Policy</h1>
-      <p>Your privacy is important to us</p>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a href="/" class="brand">
+        <span class="brand-mark">LJ</span>
+        LetsJobify
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="/">Home</a>
+        <a href="/#how-it-works">How It Works</a>
+        <a href="/blog">Blog</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/privacy-policy" aria-current="page" style="color:var(--accent);">Privacy</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="content">
-      <p><strong>Last Updated:</strong> December 3, 2025</p>
+  <div class="page-wrap">
+    <div class="container">
+      <div class="page-inner">
 
-      <h2>1. Introduction</h2>
-      <p>Welcome to LetsJobify ("we," "our," or "us"). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.</p>
+        <main>
+          <div class="prose-header">
+            <div class="prose-label">Legal</div>
+            <h1 class="prose-title">Privacy Policy</h1>
+            <p class="prose-meta">Last updated: December 3, 2025 · LetsJobify</p>
+          </div>
 
-      <h2>2. Information We Collect</h2>
-      <h3>2.1 Information You Provide</h3>
-      <p>When you use LetsJobify, we collect the following information:</p>
-      <ul>
-        <li><strong>Job Preferences:</strong> Your job location preferences, sector, skills, and minimum salary expectations</li>
-        <li><strong>Contact Information:</strong> If you contact us, we may collect your name, email address, and any other information you provide</li>
-      </ul>
+          <div class="prose">
+            <h2>1. Introduction</h2>
+            <p>
+              LetsJobify ("we", "our", or "us") operates the website at letsjobify.com. This Privacy Policy explains what information we collect when you use the service, how we use it, and what rights you have with respect to your data.
+            </p>
+            <p>
+              We have written this policy in plain language. If any section is unclear or you have questions, please contact us at <a href="mailto:mishra.ritwik.03@gmail.com">mishra.ritwik.03@gmail.com</a>.
+            </p>
 
-      <h3>2.2 Automatically Collected Information</h3>
-      <p>We may automatically collect certain information when you visit our website:</p>
-      <ul>
-        <li>IP address and browser type</li>
-        <li>Device information and operating system</li>
-        <li>Usage data and interaction patterns</li>
-        <li>Log files and error reports</li>
-      </ul>
+            <h2>2. What information we collect</h2>
+            <h3>2.1 Information you provide</h3>
+            <p>When you use LetsJobify to search for jobs, you provide:</p>
+            <ul>
+              <li><strong>Job preferences</strong> — your preferred location type (remote, onsite, hybrid), sector, skills, and optional minimum salary. This information is used only to run your job search query and is not stored persistently after the session ends.</li>
+              <li><strong>Contact information</strong> — if you email us or contact us via WhatsApp, we receive your name, email address or phone number, and the content of your message. We use this only to respond to your enquiry.</li>
+            </ul>
 
-      <h2>3. How We Use Your Information</h2>
-      <p>We use the information we collect for the following purposes:</p>
-      <ul>
-        <li>To provide and improve our job search services</li>
-        <li>To match job listings with your preferences using AI technology</li>
-        <li>To communicate with you about your account and our services</li>
-        <li>To analyze usage patterns and improve our platform</li>
-        <li>To comply with legal obligations and prevent fraud</li>
-      </ul>
+            <h3>2.2 Information collected automatically</h3>
+            <p>When you visit letsjobify.com, our web server and third-party services may automatically collect:</p>
+            <ul>
+              <li>Your IP address and approximate geographic location (country/city level)</li>
+              <li>Browser type, version, and operating system</li>
+              <li>Pages visited, time spent, and referring URL</li>
+              <li>Device type and screen resolution</li>
+            </ul>
+            <p>
+              This data is collected through standard server logs and, where applicable, through Google Analytics (if enabled). It is used in aggregate to understand how the service is used and to identify and fix technical problems.
+            </p>
 
-      <h2>4. Data Storage and Security</h2>
-      <p>We implement appropriate technical and organizational measures to protect your personal information:</p>
-      <ul>
-        <li>Generated Excel files are stored temporarily and can be accessed via secure download links</li>
-        <li>We use industry-standard security practices to protect against unauthorized access</li>
-      </ul>
+            <h2>3. How we use your information</h2>
+            <p>We use the information we collect for the following purposes:</p>
+            <ul>
+              <li><strong>To provide the service</strong> — your job preferences are used to query external job boards and filter results. This processing is necessary to deliver the service you requested.</li>
+              <li><strong>To generate and serve your download file</strong> — the Excel file containing your matched job listings is temporarily stored on our server to allow you to download it. This file is automatically deleted after a short period (typically one hour).</li>
+              <li><strong>To improve the service</strong> — aggregate usage data helps us understand which features are used, identify errors, and make the service more reliable.</li>
+              <li><strong>To communicate with you</strong> — if you contact us, we use your contact information to respond.</li>
+              <li><strong>To comply with legal obligations</strong> — we retain server logs for a limited period to help investigate abuse and comply with applicable law.</li>
+            </ul>
+            <p>We do not use your information for advertising profiling, and we do not sell your data to any third party.</p>
 
-      <h2>5. Third-Party Services</h2>
-      <p>We use the following third-party services that may collect information:</p>
-      <ul>
-        <li><strong>RemoteOK:</strong> Job listings source (see RemoteOK's terms and privacy policy)</li>
-      </ul>
+            <h2>4. Third-party services</h2>
+            <p>
+              LetsJobify integrates with external job boards to fetch listings. When you perform a search, our server makes requests to these platforms on your behalf. Your personal information is not sent to these platforms — only a search query is made from our server.
+            </p>
+            <p>The external platforms we query include:</p>
+            <ul>
+              <li>RemoteOK (remoteok.com)</li>
+              <li>Remotive (remotive.com)</li>
+              <li>Jobicy (jobicy.com)</li>
+              <li>WeWorkRemotely (weworkremotely.com)</li>
+              <li>EU Remote Jobs (euremotejobs.com)</li>
+              <li>Himalayas (himalayas.app)</li>
+              <li>Arbeitnow (arbeitnow.com)</li>
+              <li>4dayweek.io</li>
+              <li>Remote.co</li>
+            </ul>
+            <p>
+              Each of these services has its own privacy policy. Links to their policies are available on their respective websites.
+            </p>
 
-      <h2>6. Data Retention</h2>
-      <p>We retain your information for as long as necessary to provide our services and comply with legal obligations:</p>
-      <ul>
-        <li>Generated Excel files are stored temporarily and may be deleted after a reasonable period</li>
-        <li>Job preferences are stored temporarily in memory during the matching process</li>
-      </ul>
+            <h3>Google AdSense</h3>
+            <p>
+              LetsJobify displays advertisements served by Google AdSense. Google may use cookies and similar technologies to serve ads based on your prior visits to this and other websites. You can opt out of personalised advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google's ad settings page</a>.
+            </p>
 
-      <h2>7. Your Rights</h2>
-      <p>You have the right to:</p>
-      <ul>
-        <li>Access your personal information</li>
-        <li>Request correction of inaccurate information</li>
-        <li>Request deletion of your information (subject to legal requirements)</li>
-        <li>Object to processing of your information</li>
-        <li>Request data portability</li>
-      </ul>
-      <p>To exercise these rights, please contact us at <a href="mailto:mishra.ritwik.03@gmail.com">mishra.ritwik.03@gmail.com</a></p>
+            <h2>5. Cookies</h2>
+            <p>
+              LetsJobify uses minimal cookies. We may set a session cookie to maintain state during your visit. Google AdSense sets its own cookies for ad serving purposes.
+            </p>
+            <p>
+              You can control cookie behaviour through your browser settings. Blocking cookies may affect the functionality of some parts of the site. For details on how to manage cookies, see your browser's help documentation.
+            </p>
 
-      <h2>8. Cookies and Tracking</h2>
-      <p>We may use cookies and similar tracking technologies to enhance your experience. You can control cookie preferences through your browser settings.</p>
+            <h2>6. Data retention</h2>
+            <p>
+              <strong>Job preferences:</strong> Used during your session to run the search query. Not stored persistently.
+            </p>
+            <p>
+              <strong>Generated Excel files:</strong> Stored temporarily on our server (typically one hour) to allow you to download the file. Automatically deleted after expiry.
+            </p>
+            <p>
+              <strong>Server logs:</strong> Retained for a limited period (typically 30 days) for security and debugging purposes, then deleted.
+            </p>
+            <p>
+              <strong>Contact messages:</strong> Retained for as long as necessary to respond and resolve any ongoing enquiry.
+            </p>
 
-      <h2>9. Children's Privacy</h2>
-      <p>Our service is not intended for individuals under the age of 18. We do not knowingly collect personal information from children.</p>
+            <h2>7. Data security</h2>
+            <p>
+              We implement reasonable technical measures to protect the information processed by LetsJobify. These include HTTPS encryption for all data in transit, restricted access to server infrastructure, and regular security reviews.
+            </p>
+            <p>
+              No method of internet transmission is completely secure. While we take reasonable precautions, we cannot guarantee absolute security.
+            </p>
 
-      <h2>10. Changes to This Privacy Policy</h2>
-      <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.</p>
+            <h2>8. Your rights</h2>
+            <p>
+              Depending on your location, you may have the following rights with respect to your personal data:
+            </p>
+            <ul>
+              <li><strong>Access</strong> — the right to request a copy of the personal data we hold about you</li>
+              <li><strong>Correction</strong> — the right to request correction of inaccurate data</li>
+              <li><strong>Deletion</strong> — the right to request deletion of your data, subject to legal retention requirements</li>
+              <li><strong>Restriction</strong> — the right to request that we restrict processing of your data in certain circumstances</li>
+              <li><strong>Portability</strong> — the right to receive your data in a structured, machine-readable format</li>
+              <li><strong>Objection</strong> — the right to object to certain types of processing</li>
+            </ul>
+            <p>
+              To exercise any of these rights, please contact us at <a href="mailto:mishra.ritwik.03@gmail.com">mishra.ritwik.03@gmail.com</a>. We will respond within 30 days.
+            </p>
 
-      <h2>11. Contact Us</h2>
-      <p>If you have any questions about this Privacy Policy, please contact us:</p>
-      <ul>
-        <li><strong>Name:</strong> Ritwik Mishra</li>
-        <li><strong>Email:</strong> <a href="mailto:mishra.ritwik.03@gmail.com">mishra.ritwik.03@gmail.com</a></li>
-        <li><strong>Address:</strong> 647F/209 Shiv Vihar, Sector I, Jankipuram, Lucknow</li>
-      </ul>
-    </div>
+            <h2>9. Children's privacy</h2>
+            <p>
+              LetsJobify is intended for adults seeking employment. We do not knowingly collect personal information from individuals under the age of 18. If you believe we have inadvertently collected data from a minor, please contact us and we will delete it promptly.
+            </p>
 
-    <div class="last-updated">
-      <p>This Privacy Policy was last updated on December 3, 2025</p>
+            <h2>10. Changes to this policy</h2>
+            <p>
+              We may update this Privacy Policy from time to time. When we do, we will update the "Last updated" date at the top of this page. For significant changes, we will make a reasonable effort to notify users. Continued use of the service after a policy change constitutes acceptance of the updated policy.
+            </p>
+
+            <h2>11. Contact</h2>
+            <p>
+              If you have any questions about this Privacy Policy or how your data is handled, please contact:
+            </p>
+            <ul>
+              <li><strong>Name:</strong> Ritwik Mishra</li>
+              <li><strong>Email:</strong> <a href="mailto:mishra.ritwik.03@gmail.com">mishra.ritwik.03@gmail.com</a></li>
+              <li><strong>Address:</strong> 647F/209 Shiv Vihar, Sector I, Jankipuram, Lucknow, India</li>
+            </ul>
+          </div>
+        </main>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="cta-card">
+            <h4>Search remote jobs</h4>
+            <p>Find remote engineering roles matched to your skills. Free, no account needed.</p>
+            <a href="/" class="btn">Search jobs →</a>
+          </div>
+          <div class="sidebar-card">
+            <h4>Quick links</h4>
+            <p><a href="/">Home</a></p>
+            <p><a href="/blog">Blog</a></p>
+            <p><a href="/#faq">FAQ</a></p>
+            <p><a href="mailto:mishra.ritwik.03@gmail.com">Contact us</a></p>
+          </div>
+          <div class="sidebar-card">
+            <h4>Summary</h4>
+            <p>We collect only what is necessary to run your job search. We do not sell your data. Generated files are auto-deleted after one hour. AdSense may use cookies for ad personalisation.</p>
+          </div>
+        </aside>
+
+      </div>
     </div>
   </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-col">
+          <strong>LetsJobify</strong>
+          <span>Remote job matching for engineers worldwide.</span>
+          <span>© 2026 LetsJobify</span>
+        </div>
+        <div class="footer-col">
+          <strong>Pages</strong>
+          <a href="/">Home</a>
+          <a href="/blog">Blog</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+        </div>
+        <div class="footer-col">
+          <strong>Contact</strong>
+          <a href="mailto:mishra.ritwik.03@gmail.com">mishra.ritwik.03@gmail.com</a>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 LetsJobify. All listings link to original sources.</div>
+    </div>
+  </footer>
+
 </body>
 </html>
